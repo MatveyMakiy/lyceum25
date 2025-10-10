@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch HTML in Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "file": "/Users/mmakiy/Documents/lyc/webback/3/index.html",
+        }
+    ]
+}
