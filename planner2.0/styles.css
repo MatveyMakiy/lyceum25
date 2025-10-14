@@ -67,3 +67,35 @@ li.completed .text {
 .count {
     margin-top: 8px;
 }
+@keyframes goin {
+    from {
+        background-color: rgb(166, 209, 166);
+        transform: translateX(-20px);
+    }
+    to {
+        background-color: transparent;
+        transform: translateX(0);
+    }
+}
+@keyframes goout {
+    from {
+        background-color: transparent;
+        transform: translateX(0);
+    }
+    to {
+        background-color: rgb(214, 169, 169);
+        transform: translateX(20px);
+    }
+}
+.anim-in {
+    animation-name: goin;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+}
+.anim-out {
+    animation-name: goout;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+}

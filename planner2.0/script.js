@@ -24,7 +24,8 @@ addBut.addEventListener ('click', function() {
     const task = {
         id: nextId(),
         text: text,
-        done: false
+        done: false,
+        justAdd: true
     }
     tasks.push(task);
     taskInput.value = '';
@@ -36,16 +37,32 @@ filterRad.forEach(r => {
 })
 function renderTasks() {
     const filter = document.querySelector('input[name="filter"]:checked').value;
-    taskList.innerHTML = '';
-    const visible = tasks.filter(t => {
-        if (filter === 'all') return true;
-        if (filter === 'done') return t.done;
-        if (filter === 'notdone') return !t.done;
-    });
-    visible.forEach(task => {
-        const li = document.createElement ('li')
+    const visibleTasks = tasks.filter(t => 
+        filter === 'all' || (filter === 'done' && t.done) || (filter === 'notdone' && !t.done)
+    );
+    const visibleIds = new Set(visibleTasks.map(t => t.id));
+    Array.from(taskList.children).forEach(li => {
+        const id = Number(li.dataset.id);
+        if (!visibleIds.has(id) && !li.classList.contains('anim-out')) {
+            if (!li.classList.contains('anim-out')) {
+                li.classList.remove('anim-in');
+                li.classList.add('anim-out');
+                li.addEventListener('animationend', function onEnd(e) {
+                    if (e.animationName === 'goout') {
+                        if (li.parentElement) li.parentElement.removeChild(li);
+                        li.removeEventListener('animationend', onEnd)
+                    }
+                })
+            }
+        }
+    })
+    visibleTasks.forEach(task => {
+    let li = taskList.querySelector(`li[data-id="${task.id}"]`);
+    let newVis = false;
+
+    if (!li) {
+        li = document.createElement('li');
         li.dataset.id = task.id;
-        if (task.done) li.classList.add('completed');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;
@@ -54,12 +71,30 @@ function renderTasks() {
         span.textContent = task.text;
         const delBut = document.createElement('button');
         delBut.className = 'trash-bin';
-        delBut.innerHTML = '🗑️'
+        delBut.innerHTML = '🗑️';
         li.appendChild(checkbox);
         li.appendChild(span);
         li.appendChild(delBut);
         taskList.appendChild(li);
-    })
+        newVis = true;
+    } else if (!li.classList.contains('anim-in') && !li.classList.contains('anim-out')) {
+        const wasHid = li.style.display === 'none' || li.offsetParent === null;
+        if (wasHid) newVis = true;
+    }
+    if (newVis) {
+        li.classList.add('anim-in');
+        li.addEventListener('animationend', function onEnd() {
+            li.classList.remove('anim-in');
+            li.removeEventListener('animationend', onEnd);
+        });
+    }
+    const checkbox = li.querySelector('input[type="checkbox"]');
+    const span = li.querySelector('span.text');
+    if (checkbox) checkbox.checked = task.done;
+    if (span) span.textContent = task.text;
+    li.classList.toggle('completed', task.done);
+    if (li.classList.contains('anim-out')) li.classList.remove('anim-out');
+});
     const remaining = tasks.filter(t => !t.done).length;
     if (remaining === 0 || remaining > 4) countTs.textContent = 'Осталось' + ' ' + remaining + ' ' + 'задач';
     else if (remaining === 1) countTs.textContent = 'Осталась' + ' ' + remaining + ' ' + 'задача';
@@ -73,7 +108,13 @@ taskList.addEventListener('click', function (e) {
         const idx = tasks.findIndex(t => t.id === id);
         if (idx !== -1) {
             tasks.splice(idx, 1);
-            renderTasks();
+            li.classList.remove('anim-in');
+            li.classList.add('anim-out');
+            li.addEventListener('animationend', function onEnd(){
+                if (li.parentElement) li.parentElement.removeChild(li);
+                li.removeEventListener('animationend', onEnd);
+                renderTasks();
+            })
         }
     }
 })
