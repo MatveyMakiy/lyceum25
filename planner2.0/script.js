@@ -40,7 +40,7 @@ function renderTasks() {
     const visibleTasks = tasks.filter(t => 
         filter === 'all' || (filter === 'done' && t.done) || (filter === 'notdone' && !t.done)
     );
-    const visibleIds = new Set(visibleTasks.map(t => t.id));
+    const visibleIds = new Set(visibleTasks.forEach(t => t.id));
     Array.from(taskList.children).forEach(li => {
         const id = Number(li.dataset.id);
         if (!visibleIds.has(id) && !li.classList.contains('anim-out')) {
