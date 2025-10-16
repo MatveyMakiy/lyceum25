@@ -5,6 +5,27 @@ const addBut = document.getElementById('addBut')
 const taskList = document.getElementById('taskList')
 const countTs = document.getElementById('count')
 const filterRad = document.querySelectorAll('input[name="filter"]')
+function someDelay(action) {
+    const delay = Math.floor(Math.random() * 3000) + 2000;
+    blockSome(true);
+    setTimeout(() => {
+        action();
+        blockSome(false);
+    }, delay)
+}
+function blockSome(isBlocked) {
+    const elements = [
+        taskInput,
+        addBut,
+        ...document.querySelectorAll('.trash-bin'),
+        ...document.querySelectorAll('input[type="checkbox"]'),
+        ...filterRad
+    ];
+    elements.forEach(el => {
+        el.disabled = isBlocked;
+        el.classList.toggle('loading', isBlocked);
+    })
+}
 function nextId() {
     return counter++;
 }
@@ -19,18 +40,20 @@ taskInput.addEventListener('keydown', function(e) {
     }
     })
 addBut.addEventListener ('click', function() {
-    const text = taskInput.value.trim();
-    if (text === '') return;
-    const task = {
-        id: nextId(),
-        text: text,
-        done: false,
-        justAdd: true
-    }
-    tasks.push(task);
-    taskInput.value = '';
-    addButState();
-    renderTasks();
+    someDelay (() => {
+        const text = taskInput.value.trim();
+        if (text === '') return;
+        const task = {
+            id: nextId(),
+            text: text,
+            done: false,
+            justAdd: true
+        }
+        tasks.push(task);
+        taskInput.value = '';
+        addButState();
+        renderTasks();
+    })
 })
 filterRad.forEach(r => {
     r.addEventListener('change', renderTasks)
@@ -40,7 +63,7 @@ function renderTasks() {
     const visibleTasks = tasks.filter(t => 
         filter === 'all' || (filter === 'done' && t.done) || (filter === 'notdone' && !t.done)
     );
-    const visibleIds = new Set(visibleTasks.forEach(t => t.id));
+    const visibleIds = new Set(visibleTasks.map(t => t.id));
     Array.from(taskList.children).forEach(li => {
         const id = Number(li.dataset.id);
         if (!visibleIds.has(id) && !li.classList.contains('anim-out')) {
@@ -105,28 +128,30 @@ taskList.addEventListener('click', function (e) {
     if (!li) return;
     const id = Number(li.dataset.id);
     if (e.target.classList.contains('trash-bin')) {
-        const idx = tasks.findIndex(t => t.id === id);
-        if (idx !== -1) {
-            tasks.splice(idx, 1);
-            li.classList.remove('anim-in');
-            li.classList.add('anim-out');
-            li.addEventListener('animationend', function onEnd(){
-                if (li.parentElement) li.parentElement.removeChild(li);
-                li.removeEventListener('animationend', onEnd);
-                renderTasks();
-            })
-        }
+        someDelay(() => {
+            const idx = tasks.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                tasks.splice(idx, 1);
+                li.classList.remove('anim-in');
+                li.classList.add('anim-out');
+                li.addEventListener('animationend', function onEnd(){
+                    if (li.parentElement) li.parentElement.removeChild(li);
+                    li.removeEventListener('animationend', onEnd);
+                    renderTasks();
+                })
+            }
+        })
     }
 })
 taskList.addEventListener ('change', function(e) {
     if (e.target.type === 'checkbox') {
-        const li = e.target.closest('li');
-        if (!li) return;
-        const id = Number(li.dataset.id);
+        const id  = Number(e.target.closest('li').dataset.id);
         const task = tasks.find(t => t.id === id);
         if (task) {
-            task.done = e.target.checked;
-            renderTasks();
+            someDelay(() => {
+                task.done = e.target.checked;
+                renderTasks();
+            })
         }
     }
 })
