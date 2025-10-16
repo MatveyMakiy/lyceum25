@@ -92,10 +92,16 @@ li.completed .text {
     animation-duration: 1s;
     animation-fill-mode: forwards;
     animation-direction: normal;
+    animation-timing-function: linear;
 }
 .anim-out {
     animation-name: goout;
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
     animation-direction: normal;
+    animation-timing-function: linear;
+}
+.loading {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
