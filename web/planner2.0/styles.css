@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 25px;
+    background-color: white;
+    color: black;
+}
+.container {
+    max-width: 750px;
+    margin: 0 auto;
+}
+.newtaskrow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.filters {
+    margin: 12px 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+input[type = 'text'] {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 15px;
+    border: 1px solid black;
+}
+button.add-but {
+    width: 45px;
+    height: 45px;
+    font-size: 30px;
+    border-radius: 25%;
+    border: 1px solid transparent;
+    background-color: rgb(35, 133, 203);
+    color: white;
+    cursor: pointer;
+}
+button.add-but:disabled {
+    background-color: rgb(153, 147, 147);
+    cursor: default;
+}
+ul.tasks {
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+ul.tasks li{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 4px 6px;
+    border-bottom: 1px solid white;
+}
+.text {
+    flex: 1;
+}
+li.completed .text {
+    color: rgb(172, 174, 178);
+}
+.trash-bin {
+    font-size: 15px;
+    padding: 5px;
+    cursor: pointer;
+    margin-top: -3px;
+    margin-bottom: -3px;
+}
+.count {
+    margin-top: 8px;
+}
+@keyframes goin {
+    from {
+        background-color: rgb(166, 209, 166);
+        transform: translateX(-20px);
+    }
+    to {
+        background-color: transparent;
+        transform: translateX(0);
+    }
+}
+@keyframes goout {
+    from {
+        background-color: transparent;
+        transform: translateX(0);
+    }
+    to {
+        background-color: rgb(214, 169, 169);
+        transform: translateX(20px);
+    }
+}
+.anim-in {
+    animation-name: goin;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-timing-function: linear;
+}
+.anim-out {
+    animation-name: goout;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-timing-function: linear;
+}
+.loading {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
