@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Launch HTML in Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "file": "/Users/mmakiy/Documents/lyc/.vscode/tbank/exam0.js",
+        }
+    ]
+}
