@@ -14,7 +14,7 @@ def hardBotChoice(player_history, computer_history, round_number):
         "бумага": "ножницы"
     }
     strategies = []
-    if most_common and freq[most_common] / len(player_history) > 0.4:  # >40%
+    if most_common and freq[most_common] / len(player_history) > 0.4:
         strategies.append(("freq", counter_moves[most_common]))
     if recent_pattern and len(player_history) >= 6:
         pattern_history = []
