@@ -1,0 +1,11 @@
+{
+    "name": "countries-search-system",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "node back/server.js",
+        "dev": "node back/server.js"
+    },
+    "engines": {
+        "node": ">=12.0.0"
+    }
+}
