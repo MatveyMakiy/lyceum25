@@ -18,10 +18,61 @@
 
             <main id="mainView">
                 <nav class="nav">
-                    
+                    <button class="nav-button_active" id="homeButton">Список стран</button>
+                    <button class="nav-button" id="detailViewButton" disabled>Детали</button>
                 </nav>
 
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="searchInput">Поиск:</label>
+                        <input type="text" id="searchInput" placeholder="Название страны">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="regionSelect">Регион:</label>
+                            <select id="regionSelect">
+                                    <option value="">Все</option>
+                            </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="populationMin">Население от:</label>
+                        <input type="number" id="populationMin" placeholder="Минимум">
+                        <input type="number" id="populationMax" placeholder="Максимум">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="areaMin">Площадь от:</label>
+                        <input type="number" id="areaMin" placeholder="Минимум">
+                        <input type="number" id="areaMax" placeholder="Максимум">
+                    </div>
+
+                    <div class="view-toggle">
+                        <label><input type="radio" name="viewType" value="table" checked>Таблица</label>
+                        <label><input type="radio" name="viewType" value="cards" checked>Карточки</label>
+                    </div>
+                </div>
+
+                <div id="loading">Загрузка данных...</div>
+                <div id="error" class="error"></div>
+
+                <div class="country-list" id="countryList"></div>
             </main>
+
+            <div id="detailView" class="hidden">
+                <nav class="nav">
+                    <button class="nav-button" id="backButton">Назад</button>
+                </nav>
+
+                <div id="detailLoading">Загрузка...</div>
+                <div id="detailError" class="error"></div>
+
+                <div id="detailContent" class="country-detail"></div>
+            </div>
         </div>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="api.js"></script>
+        <script src="app.js"></script>
     </body>
 </html>
