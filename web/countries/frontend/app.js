@@ -36,8 +36,6 @@ class CountriesApp {
             error: document.getElementById('error'),
             detailLoading: document.getElementById('detailLoading'),
             detailError: document.getElementById('detailError'),
-            homeButton: document.getElementById('homeButton'),
-            detailViewButton: document.getElementById('detailViewButton'),
             backButton: document.getElementById('backButton')
         };
 
@@ -49,9 +47,7 @@ class CountriesApp {
 
     setupEventListeners() {
         this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
-        this.elements.homeButton.addEventListener('click', () => this.showMainView());
         this.elements.backButton.addEventListener('click', () => this.showMainView());
-        this.elements.detailViewButton.addEventListener('click', () => this.showDetailView());
 
         this.elements.searchInput.addEventListener('input', (e) => {
             this.filters.search = e.target.value;
@@ -91,19 +87,38 @@ class CountriesApp {
         });
     }
 
+    setTheme(isDark) {
+    document.body.classList.toggle('dark-mode', isDark);
+    this.elements.themeIcon.textContent = isDark ? '☀️' : '🌙';
+    }
+
     async init() {
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            this.elements.themeIcon.textContent = '☀️';
+        if (savedTheme) {
+            this.setTheme(savedTheme === 'dark');
+        } else {
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            this.setTheme(systemDark);
         }
+
+        this.listenSystemTheme();
 
         await this.loadRegions();
         await this.loadCountries();
     }
+
+    listenSystemTheme() {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    media.addEventListener('change', (e) => {
+        if (localStorage.getItem('theme')) return;
+        this.setTheme(e.matches);
+    });
+    }
+
     toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        this.elements.themeIcon.textContent = isDark ? '☀️' : '🌙';
+        const isDark = !document.body.classList.contains('dark-mode');
+        this.setTheme(isDark);
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
 
@@ -249,7 +264,6 @@ class CountriesApp {
             this.renderCountryDetail();
             
             this.elements.detailLoading.classList.add('hidden');
-            this.elements.detailViewButton.disabled = false;
             
         } catch (error) {
             this.elements.detailLoading.classList.add('hidden');
@@ -326,9 +340,8 @@ class CountriesApp {
                     <div class="detail-section">
                         <h3>Флаг страны</h3>
                         <img src="${API.getFlagUrl(country.cca2)}" 
-                             alt="Флаг ${country.name.common}" 
-                             class="flag-image"
-                             onerror="this.style.display='none'">
+                            alt="Флаг ${country.name.common}" 
+                            class="flag-image">
                     </div>
                     
                     <div class="detail-section">
