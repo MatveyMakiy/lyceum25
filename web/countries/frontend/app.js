@@ -42,12 +42,16 @@ class CountriesApp {
         };
 
         this.viewButtons = document.querySelectorAll('input[name="viewType"]');
+
+        const checked = document.querySelector('input[name="viewType"]:checked');
+        this.viewType = checked ? checked.value : 'table';
     }
 
     setupEventListeners() {
         this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
         this.elements.homeButton.addEventListener('click', () => this.showMainView());
         this.elements.backButton.addEventListener('click', () => this.showMainView());
+        this.elements.detailViewButton.addEventListener('click', () => this.showDetailView());
 
         this.elements.searchInput.addEventListener('input', (e) => {
             this.filters.search = e.target.value;
@@ -90,7 +94,7 @@ class CountriesApp {
     async init() {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
-            document.body.classList.add('dark-theme');
+            document.body.classList.add('dark-mode');
             this.elements.themeIcon.textContent = '☀️';
         }
 
@@ -98,7 +102,7 @@ class CountriesApp {
         await this.loadCountries();
     }
     toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.toggle('dark-mode');
         this.elements.themeIcon.textContent = isDark ? '☀️' : '🌙';
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
@@ -193,21 +197,6 @@ class CountriesApp {
             container.appendChild(card);
 
         });
-    }
-
-    renderTableView(container) {
-        container.innerHTML = '';
-        
-        if (this.countries.length === 0) {
-            container.innerHTML = '<p style="text-align: center; padding: 40px;">Страны не найдены</p>';
-            return;
-        }
-        
-        if (this.viewType === 'table') {
-            this.renderTableView(container);
-        } else {
-            this.renderCardsView(container);
-        }
     }
     
     renderTableView(container) {
