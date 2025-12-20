@@ -32,9 +32,9 @@ const server = http.createServer((req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/countries') {
         handleGetCountries(req, res, parsedUrl.query);
-    } else if (req.method === 'GET' && pathname.startsWith === '/api/countries/') {
+    } else if (req.method === 'GET' && pathname.startsWith('/api/countries/')) {
         const code = pathname.split('/')[3];
-        handleGetCountries(req, res, code);
+        handleGetCountry(req, res, code);
     } else {
         serveStatic(req, res);
     }
@@ -59,7 +59,7 @@ function handleGetCountries(req, res, query) {
         }
 
         if (query.region) {
-            filtered = filtered.filter(c => c.regiom === query.region);
+            filtered = filtered.filter(c => c.region === query.region);
         }
 
         if (query.minPopulation) {
@@ -118,7 +118,7 @@ function handleGetCountry (req, res, code) {
 }
 
 function serveStatic(req, res) {
-    let filePath = path.join(__dirname, '..frontend', req.url === '/' ? 'index.html' : req.url);
+    let filePath = path.join(__dirname, '../frontend', req.url === '/' ? 'index.html' : req.url);
 
     const ext = path.extname(filePath);
     const contentTypes = {
@@ -136,7 +136,7 @@ function serveStatic(req, res) {
     fs.readFile(filePath, (error, content) => {
         if (error) {
             if (error.code === 'ENOENT') {
-                const indexPath = path.join(__dirname, '..frontend/index.html');
+                const indexPath = path.join(__dirname, '../frontend/index.html');
                 fs.readFile(indexPath, (err, data) => {
                     if (err) {
                         res.writeHead(404);
