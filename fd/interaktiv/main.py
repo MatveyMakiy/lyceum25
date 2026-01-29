@@ -38,10 +38,6 @@ class Body:
         x0, y0 = self.center()
         self.app.canvas.move(self.id, cx - x0, cy - y0)
 
-    def apply_impulse(self, ix, iy):
-        self.vx += ix / max(self.mass, 1e-6)
-        self.vy += iy / max(self.mass, 1e-6)
-
     def step(self, dt):
         self.vx *= self.drag
         self.vy *= self.drag
@@ -80,10 +76,6 @@ class Ball(Body):
                                          tags=(self.tag, "body"))
         app.body_by_id[self.id] = self
 
-    def center(self):
-        b = self.bbox()
-        return (b[0] + b[2]) / 2.0, (b[1] + b[3]) / 2.0
-
 class Box(Body):
     def __init__(self, app, x, y, w=56, h=40, mass=3.0):
         super().__init__(app, "box", mass=mass, restitution=0.25, drag=0.994)
@@ -97,9 +89,8 @@ class Box(Body):
 class Poly(Body):
     def __init__(self, app, x, y, points, mass=2.0):
         super().__init__(app, "poly", mass=mass, restitution=0.3, drag=0.993)
-        self.local = points[:]  # list of (lx, ly)
         flat = []
-        for lx, ly in self.local:
+        for lx, ly in points:
             flat.extend([x + lx, y + ly])
         self.id = app.canvas.create_polygon(*flat, fill="#e6e6e6", outline="#2b2b2b", width=2,
                                             tags=(self.tag, "body"))
@@ -107,9 +98,7 @@ class Poly(Body):
 
     def move_to(self, cx, cy):
         x0, y0 = self.center()
-        dx = cx - x0
-        dy = cy - y0
-        self.app.canvas.move(self.id, dx, dy)
+        self.app.canvas.move(self.id, cx - x0, cy - y0)
 
 class Magnet(Body):
     def __init__(self, app, x, y, r=18, radius=160, strength=1100):
@@ -132,12 +121,39 @@ class Magnet(Body):
         self.app.canvas.move(self.id, dx, dy)
         self.app.canvas.move(self.ring, dx, dy)
 
-    def bbox(self):
-        return self.app.canvas.bbox(self.id)
+    def step(self, dt):
+        self.vx *= self.drag
+        self.vy *= self.drag
+        dx = self.vx * dt
+        dy = self.vy * dt
+        if dx or dy:
+            self.app.canvas.move(self.id, dx, dy)
+            self.app.canvas.move(self.ring, dx, dy)
 
-    def center(self):
+    def keep_in_bounds(self):
         b = self.bbox()
-        return (b[0] + b[2]) / 2.0, (b[1] + b[3]) / 2.0
+        if not b:
+            return
+        x0, y0, x1, y1 = b
+        dx = dy = 0.0
+
+        if x0 < 0:
+            dx = -x0
+            self.vx = -self.vx * self.restitution
+        elif x1 > self.app.cw:
+            dx = self.app.cw - x1
+            self.vx = -self.vx * self.restitution
+
+        if y0 < 0:
+            dy = -y0
+            self.vy = -self.vy * self.restitution
+        elif y1 > self.app.ch:
+            dy = self.app.ch - y1
+            self.vy = -self.vy * self.restitution
+
+        if dx or dy:
+            self.app.canvas.move(self.id, dx, dy)
+            self.app.canvas.move(self.ring, dx, dy)
 
 class GlueZone:
     def __init__(self, app, x, y, w=170, h=90, viscosity=0.87):
@@ -231,8 +247,7 @@ class App:
         x, y = self.rnd_pos()
         s = random.randint(26, 40)
         pts = [(0, -s), (s, s), (-s, s)]
-        mass = 2.0
-        p = Poly(self, x, y, pts, mass=mass)
+        p = Poly(self, x, y, pts, mass=2.0)
         self.bodies.append(p)
 
     def add_pentagon(self):
@@ -242,8 +257,7 @@ class App:
         for i in range(5):
             ang = -math.pi/2 + i * (2*math.pi/5)
             pts.append((r * math.cos(ang), r * math.sin(ang)))
-        mass = 2.4
-        p = Poly(self, x, y, pts, mass=mass)
+        p = Poly(self, x, y, pts, mass=2.4)
         self.bodies.append(p)
 
     def add_magnet(self):
@@ -321,8 +335,8 @@ class App:
             dt = max(0.001, t1 - t0)
             vx = (x1 - x0) / dt
             vy = (y1 - y0) / dt
-        self.selected.vx = clamp(vx * 0.015, -18, 18)
-        self.selected.vy = clamp(vy * 0.015, -18, 18)
+        self.selected.vx = clamp(vx * 0.05, -50, 50)
+        self.selected.vy = clamp(vy * 0.05, -50, 50)
         self.selected = None
         self.mouse_hist.clear()
 
@@ -422,7 +436,6 @@ class App:
             sep = min_ox
             direction = -1 if acx < bcx else 1
             dx = direction * sep
-            dy = 0
             a.move_to(acx + dx * 0.5, acy)
             b.move_to(bcx - dx * 0.5, bcy)
             e = min(a.restitution, b.restitution)
@@ -430,7 +443,6 @@ class App:
         else:
             sep = min_oy
             direction = -1 if acy < bcy else 1
-            dx = 0
             dy = direction * sep
             a.move_to(acx, acy + dy * 0.5)
             b.move_to(bcx, bcy - dy * 0.5)
@@ -447,8 +459,6 @@ class App:
                 b = self.bodies[j]
                 if a.kind == "magnet" and b.kind == "magnet":
                     continue
-                if self.selected is a or self.selected is b:
-                    pass
                 if isinstance(a, Ball) and isinstance(b, Ball):
                     self.resolve_circle_circle(a, b)
                 else:
