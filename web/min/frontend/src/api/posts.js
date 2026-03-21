@@ -1,4 +1,4 @@
-import { posts } from "../mock/posts.js";
+import { posts } from '../mock/posts.js';
 
 export function getPosts(page = 1, limit = 2) {
   return new Promise((resolve) => {

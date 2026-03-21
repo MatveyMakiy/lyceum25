@@ -1,6 +1,6 @@
 export function createPostCard(post) {
-  const article = document.createElement("article");
-  article.className = "post-card";
+  const article = document.createElement('article');
+  article.className = 'post-card';
 
   article.innerHTML = `
     <div class="post-card__top">
