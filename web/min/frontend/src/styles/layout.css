@@ -1,0 +1,36 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 88px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar__logo {
+  font-weight: bold;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar__link {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f1f1f1;
+  text-align: center;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+}
