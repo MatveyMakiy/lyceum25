@@ -1,62 +1,42 @@
-import { users as defaultUsers } from '../mock/users.js';
+import { API_URL } from '../api.js';
 
-const USERS_KEY = 'mockUsers';
+export async function loginUser(email, password) {
+  const response = await fetch(`${API_URL}/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+    }),
+  });
 
-function getStoredUsers() {
-  const raw = localStorage.getItem(USERS_KEY);
+  const data = await response.json();
 
-  if (raw) {
-    return JSON.parse(raw);
+  if (!response.ok) {
+    throw new Error(data.message || 'Неверная почта или пароль');
   }
 
-  localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
-  return [...defaultUsers];
+  localStorage.setItem('token', data.token);
+
+  return data.user;
 }
 
-function saveStoredUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-export function loginUser(email, password) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const users = getStoredUsers();
-
-      const user = users.find(
-        (item) => item.email === email && item.password === password,
-      );
-
-      if (!user) {
-        reject(new Error('Неверная почта или пароль'));
-        return;
-      }
-
-      resolve(user);
-    }, 300);
+export async function registerUser(newUser) {
+  const response = await fetch(`${API_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newUser),
   });
-}
 
-export function registerUser(newUser) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const users = getStoredUsers();
+  const data = await response.json();
 
-      const exists = users.some((item) => item.email === newUser.email);
+  if (!response.ok) {
+    throw new Error(data.message || 'Ошибка регистрации');
+  }
 
-      if (exists) {
-        reject(new Error('Пользователь с такой почтой уже существует'));
-        return;
-      }
-
-      const createdUser = {
-        id: `u${Date.now()}`,
-        ...newUser,
-      };
-
-      users.push(createdUser);
-      saveStoredUsers(users);
-
-      resolve(createdUser);
-    }, 300);
-  });
+  return data;
 }

@@ -49,8 +49,17 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
+  const [firstName, ...rest] = name.split(' ');
+  const lastName = rest.join(' ') || '-';
+
   try {
-    await registerUser({ name, email, password });
+    await registerUser({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
     window.location.href = '/login.html';
   } catch (error) {
     errorBox.textContent = error.message;
