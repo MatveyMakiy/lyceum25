@@ -5,10 +5,10 @@ import {
   leaveGroup,
   updateGroupMemberRole,
 } from '../../api/groups.js';
-import { createPost } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
-import { createPostCard } from '../../components/post/postCard.js';
+import { createPost, deletePost } from '../../api/posts.js';
 import { getCurrentUser } from '../../utils/storage.js';
+import { createPostCard } from '../../components/post/postCard.js';
 
 const currentUser = getCurrentUser();
 
@@ -84,25 +84,26 @@ function updatePostFormVisibility(membership) {
 
 function renderPosts(posts) {
   groupPosts.innerHTML = '';
-
   if (posts.length === 0) {
     groupPostsEmpty.style.display = 'block';
     return;
   }
-
   groupPostsEmpty.style.display = 'none';
-
   posts.forEach((post) => {
     const normalizedPost = {
       id: post.id,
+      authorId: post.author?.id || null,
       author: post.author
         ? `${post.author.firstName} ${post.author.lastName}`
         : 'Неизвестный автор',
       text: post.content,
       date: new Date(post.createdAt).toLocaleString('ru-RU'),
     };
-
-    groupPosts.appendChild(createPostCard(normalizedPost));
+    groupPosts.appendChild(
+      createPostCard(normalizedPost, {
+        onDelete: handleDeletePost,
+      }),
+    );
   });
 }
 
@@ -228,5 +229,14 @@ membershipButton.addEventListener('click', async () => {
     membershipButton.disabled = false;
   }
 });
+
+async function handleDeletePost(id) {
+  try {
+    await deletePost(id);
+    await loadGroup();
+  } catch (error) {
+    showStatus(error.message);
+  }
+}
 
 loadGroup();

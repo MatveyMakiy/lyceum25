@@ -1,4 +1,4 @@
-import { getPosts } from '../../api/posts.js';
+import { deletePost, getPosts } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
 import { getCurrentUser } from '../../utils/storage.js';
@@ -37,7 +37,11 @@ function renderPosts(posts) {
   postsContainer.innerHTML = '';
 
   posts.forEach((post) => {
-    postsContainer.appendChild(createPostCard(post));
+    postsContainer.appendChild(
+      createPostCard(post, {
+        onDelete: handleDeletePost,
+      }),
+    );
   });
 }
 
@@ -50,6 +54,15 @@ function updateEmptyState(total) {
     showStatus('По вашему запросу ничего не найдено');
   } else {
     showStatus('Пока публикаций нет');
+  }
+}
+
+async function handleDeletePost(id) {
+  try {
+    await deletePost(id);
+    resetFeed();
+  } catch (error) {
+    showStatus(error.message);
   }
 }
 

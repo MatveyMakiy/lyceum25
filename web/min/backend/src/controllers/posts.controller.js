@@ -80,6 +80,46 @@ export async function getPosts(req, res) {
   }
 }
 
+export async function getPostById(req, res) {
+  try {
+    const { id } = req.params;
+    const post = await prisma.post.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    if (!post) {
+      return res.status(404).json({
+        message: 'Пост не найден',
+      });
+    }
+    return res.json(post);
+  } catch (error) {
+    console.error('Get post by id error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
 export async function createPost(req, res) {
   try {
     const { content, groupId } = req.body;

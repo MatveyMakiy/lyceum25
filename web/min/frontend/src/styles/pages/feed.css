@@ -73,3 +73,28 @@
   color: #777;
   font-size: 18px;
 }
+
+.post-card__group {
+  margin-left: 8px;
+  color: #777;
+  font-size: 14px;
+}
+
+.post-card__actions {
+  display: flex;
+  gap: 10px; 
+  margin-top: 14px;
+}
+
+.post-card__action {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.post-card__action:hover {
+  background: #f3f3f3;
+}
