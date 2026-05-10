@@ -2,33 +2,75 @@ import prisma from '../lib/prisma.js';
 
 export async function getPosts(req, res) {
   try {
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        updatedAt: true,
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        group: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 2;
+    const search = req.query.search?.trim() || '';
+    const skip = (page - 1) * limit;
+    const where = search
+      ? {
+          OR: [
+            {
+              content: {
+                contains: search,
+              },
+            },
+            {
+              author: {
+                firstName: {
+                  contains: search,
+                },
+              },
+            },
+            {
+              author: {
+                lastName: {
+                  contains: search,
+                },
+              },
+            },
+          ],
+        }
+      : {};
 
-    return res.json(posts);
+    const [posts, total] = await Promise.all([
+      prisma.post.findMany({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          group: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      }),
+      prisma.post.count({ where }),
+    ]);
+
+    return res.json({
+      items: posts,
+      total,
+      page,
+      limit,
+      hasMore: skip + posts.length < total,
+    });
   } catch (error) {
     console.error('Get posts error:', error);
 

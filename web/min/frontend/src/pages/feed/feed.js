@@ -5,70 +5,92 @@ import { getCurrentUser } from '../../utils/storage.js';
 
 const sidebarContainer = document.getElementById('sidebar');
 const postsContainer = document.getElementById('posts');
+const postsStatus = document.getElementById('posts-status');
 const loadMoreButton = document.getElementById('load-more-btn');
 const searchInput = document.getElementById('feed-search');
-const postsEmpty = document.getElementById('posts-empty');
 const createPostLink = document.getElementById('create-post-link');
 
 let currentPage = 1;
 const limit = 2;
+let currentSearch = '';
 let loadedPosts = [];
 
 renderSidebar(sidebarContainer);
 
+const currentUser = getCurrentUser();
+
+if (!currentUser && createPostLink) {
+  createPostLink.style.display = 'none';
+}
+
+function showStatus(message) {
+  postsStatus.textContent = message;
+  postsStatus.style.display = 'block';
+}
+
+function hideStatus() {
+  postsStatus.textContent = '';
+  postsStatus.style.display = 'none';
+}
+
 function renderPosts(posts) {
   postsContainer.innerHTML = '';
 
-  if (posts.length === 0) {
-    postsEmpty.style.display = 'block';
-    return;
-  }
-  postsEmpty.style.display = 'none';
   posts.forEach((post) => {
     postsContainer.appendChild(createPostCard(post));
   });
 }
 
-const currentUser = getCurrentUser();
-if (!currentUser) {
-  createPostLink.style.display = 'none';
-}
-
-function filterPosts(query) {
-  const normalizedQuery = query.trim().toLowerCase();
-
-  if (!normalizedQuery) {
-    renderPosts(loadedPosts);
+function updateEmptyState(total) {
+  if (total > 0) {
+    hideStatus();
     return;
   }
-
-  const filteredPosts = loadedPosts.filter((post) => {
-    return (
-      post.author.toLowerCase().includes(normalizedQuery) ||
-      post.text.toLowerCase().includes(normalizedQuery)
-    );
-  });
-
-  renderPosts(filteredPosts);
+  if (currentSearch) {
+    showStatus('По вашему запросу ничего не найдено');
+  } else {
+    showStatus('Пока публикаций нет');
+  }
 }
 
 async function loadPage() {
-  const result = await getPosts(currentPage, limit);
-
-  loadedPosts = [...loadedPosts, ...result.items];
-  renderPosts(loadedPosts);
-
-  if (!result.hasMore) {
+  try {
+    if (currentPage === 1) {
+      showStatus('Загрузка...');
+      postsContainer.innerHTML = '';
+    }
+    loadMoreButton.disabled = true;
+    const result = await getPosts(currentPage, limit, currentSearch);
+    loadedPosts = [...loadedPosts, ...result.items];
+    renderPosts(loadedPosts);
+    updateEmptyState(result.total);
+    loadMoreButton.style.display = result.hasMore ? 'block' : 'none';
+    currentPage += 1;
+  } catch (error) {
+    showStatus(error.message);
     loadMoreButton.style.display = 'none';
+  } finally {
+    loadMoreButton.disabled = false;
   }
-
-  currentPage += 1;
 }
 
-loadMoreButton.addEventListener('click', loadPage);
+function resetFeed() {
+  currentPage = 1;
+  loadedPosts = [];
+  loadMoreButton.style.display = 'block';
+  loadPage();
+}
+
+let searchTimeout;
 
 searchInput.addEventListener('input', (event) => {
-  filterPosts(event.target.value);
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    currentSearch = event.target.value.trim();
+    resetFeed();
+  }, 300);
 });
+
+loadMoreButton.addEventListener('click', loadPage);
 
 loadPage();
