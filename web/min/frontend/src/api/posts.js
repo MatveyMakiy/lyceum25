@@ -30,7 +30,7 @@ export async function getPosts(page = 1, limit = 2, search = '') {
   };
 }
 
-export async function createPost(content) {
+export async function createPost(content, groupId = null) {
   const token = localStorage.getItem('token');
 
   const response = await fetch(`${API_URL}/posts`, {
@@ -41,6 +41,7 @@ export async function createPost(content) {
     },
     body: JSON.stringify({
       content,
+      groupId,
     }),
   });
 

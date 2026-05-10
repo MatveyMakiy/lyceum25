@@ -2,32 +2,53 @@ import prisma from '../lib/prisma.js';
 
 export async function getGroups(req, res) {
   try {
-    const groups = await prisma.group.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        avatarUrl: true,
-        createdAt: true,
-        updatedAt: true,
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 6;
+    const search = req.query.search?.trim() || '';
+    const skip = (page - 1) * limit;
+    const where = search
+      ? {
+          name: {
+            contains: search,
+          },
+        }
+      : {};
+    const [groups, total] = await Promise.all([
+      prisma.group.findMany({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          avatarUrl: true,
+          createdAt: true,
+          updatedAt: true,
+          creator: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
           },
         },
-      },
+      }),
+      prisma.group.count({ where }),
+    ]);
+    return res.json({
+      items: groups,
+      total,
+      page,
+      limit,
+      hasMore: skip + groups.length < total,
     });
-
-    return res.json(groups);
   } catch (error) {
     console.error('Get groups error:', error);
-
     return res.status(500).json({
       message: 'Ошибка сервера',
     });
