@@ -15,10 +15,19 @@
       <main class="content">
         <header class="feed-header">
           <h1>Лента</h1>
-          <input id="feed-search" type="text" placeholder="Поиск" />
-        </header>
 
+          <div class="feed-header__actions">
+            <a id="create-post-link" class="create-post-link" href="/create-post.html">
+              Написать пост
+            </a>
+          <input id="feed-search" type="text" placeholder="Поиск" />
+          </div>
+        </header>
         <section id="posts" class="posts-list"></section>
+
+        <p id="posts-empty" class="posts-empty">
+          Пока публикаций нет. Авторизуйтесь и создайте первый пост.
+        </p>
 
         <div class="feed-actions">
           <button id="load-more-btn">Показать ещё</button>

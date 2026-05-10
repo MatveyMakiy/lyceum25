@@ -52,3 +52,24 @@
   background: white;
   cursor: pointer;
 }
+
+.posts-empty {
+  display: none;
+  margin-top: 40px;
+  text-align: center;
+  color: #777;
+  font-size: 18px;
+}
+
+.feed-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.create-post-link {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+}

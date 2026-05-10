@@ -1,13 +1,7 @@
 import { API_URL } from '../api.js';
 
 export async function getPosts(page = 1, limit = 2) {
-  const token = localStorage.getItem('token');
-
-  const response = await fetch(`${API_URL}/posts`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(`${API_URL}/posts`);
 
   const data = await response.json();
 
@@ -31,4 +25,27 @@ export async function getPosts(page = 1, limit = 2) {
     items: normalizedPosts.slice(start, end),
     hasMore: end < normalizedPosts.length,
   };
+}
+
+export async function createPost(content) {
+  const token = localStorage.getItem('token');
+
+  const response = await fetch(`${API_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      content,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось создать пост');
+  }
+
+  return data;
 }

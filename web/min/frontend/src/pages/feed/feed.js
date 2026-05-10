@@ -3,16 +3,12 @@ import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
 import { getCurrentUser } from '../../utils/storage.js';
 
-const currentUser = getCurrentUser();
-
-if (!currentUser) {
-  window.location.href = '/login.html';
-}
-
 const sidebarContainer = document.getElementById('sidebar');
 const postsContainer = document.getElementById('posts');
 const loadMoreButton = document.getElementById('load-more-btn');
 const searchInput = document.getElementById('feed-search');
+const postsEmpty = document.getElementById('posts-empty');
+const createPostLink = document.getElementById('create-post-link');
 
 let currentPage = 1;
 const limit = 2;
@@ -23,9 +19,19 @@ renderSidebar(sidebarContainer);
 function renderPosts(posts) {
   postsContainer.innerHTML = '';
 
+  if (posts.length === 0) {
+    postsEmpty.style.display = 'block';
+    return;
+  }
+  postsEmpty.style.display = 'none';
   posts.forEach((post) => {
     postsContainer.appendChild(createPostCard(post));
   });
+}
+
+const currentUser = getCurrentUser();
+if (!currentUser) {
+  createPostLink.style.display = 'none';
 }
 
 function filterPosts(query) {
