@@ -10,7 +10,11 @@ export function createPostCard(post, options = {}) {
   article.innerHTML = `
     <div class="post-card__top">
       <div>
-        <span class="post-card__author">${post.author}</span>
+        ${
+          post.authorId
+            ? `<a class="post-card__author" href="/user-profile.html?id=${post.authorId}">${post.author}</a>`
+            : `<span class="post-card__author">${post.author}</span>`
+        }
         ${
           post.group
             ? `<span class="post-card__group">в группе «${post.group.name}»</span>`
