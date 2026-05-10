@@ -68,3 +68,32 @@ export async function getGroupById(id) {
 
   return data;
 }
+
+export async function joinGroup(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/groups/${id}/join`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось вступить в группу');
+  }
+  return data;
+}
+export async function leaveGroup(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/groups/${id}/leave`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось выйти из группы');
+  }
+  return data;
+}

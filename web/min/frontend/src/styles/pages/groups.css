@@ -206,3 +206,31 @@
   display: none;
   color: #777;
 }
+
+.group-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.group-page__members {
+  margin: 8px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.group-page__actions button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.group-page__actions button:disabled {
+  background: #e8e8e8;
+  color: #777;
+  cursor: default;
+}

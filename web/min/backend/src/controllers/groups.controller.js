@@ -71,6 +71,12 @@ export async function createGroup(req, res) {
         description: description?.trim() || null,
         avatarUrl: avatarUrl?.trim() || null,
         createdBy: req.user.id,
+        members: {
+          create: {
+            userId: req.user.id,
+            role: 'admin',
+          },
+        },
       },
       select: {
         id: true,
@@ -121,6 +127,19 @@ export async function getGroupById(req, res) {
             email: true,
           },
         },
+        _count: {
+          select: {
+            members: true,
+          },
+        },
+        members: {
+          where: {
+            userId: req.user.id,
+          },
+          select: {
+            role: true,
+          },
+        },
         posts: {
           orderBy: {
             createdAt: 'desc',
@@ -153,6 +172,89 @@ export async function getGroupById(req, res) {
   } catch (error) {
     console.error('Get group by id error:', error);
 
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function joinGroup(req, res) {
+  try {
+    const { id } = req.params;
+    const group = await prisma.group.findUnique({
+      where: { id },
+    });
+    if (!group) {
+      return res.status(404).json({
+        message: 'Группа не найдена',
+      });
+    }
+    const existingMembership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: id,
+        },
+      },
+    });
+    if (existingMembership) {
+      return res.status(400).json({
+        message: 'Вы уже состоите в этой группе',
+      });
+    }
+    await prisma.groupMember.create({
+      data: {
+        userId: req.user.id,
+        groupId: id,
+        role: 'member',
+      },
+    });
+    return res.status(201).json({
+      message: 'Вы вступили в группу',
+    });
+  } catch (error) {
+    console.error('Join group error:', error);
+
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function leaveGroup(req, res) {
+  try {
+    const { id } = req.params;
+    const membership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: id,
+        },
+      },
+    });
+    if (!membership) {
+      return res.status(404).json({
+        message: 'Вы не состоите в этой группе',
+      });
+    }
+    if (membership.role === 'admin') {
+      return res.status(400).json({
+        message: 'Администратор не может выйти из своей группы',
+      });
+    }
+    await prisma.groupMember.delete({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: id,
+        },
+      },
+    });
+    return res.json({
+      message: 'Вы вышли из группы',
+    });
+  } catch (error) {
+    console.error('Leave group error:', error);
     return res.status(500).json({
       message: 'Ошибка сервера',
     });

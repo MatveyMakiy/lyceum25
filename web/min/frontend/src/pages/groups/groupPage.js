@@ -1,4 +1,4 @@
-import { getGroupById } from '../../api/groups.js';
+import { getGroupById, joinGroup, leaveGroup } from '../../api/groups.js';
 import { createPost } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
@@ -16,6 +16,8 @@ const groupContent = document.getElementById('group-content');
 const groupName = document.getElementById('group-name');
 const groupDescription = document.getElementById('group-description');
 const groupCreator = document.getElementById('group-creator');
+const groupMembersCount = document.getElementById('group-members-count');
+const membershipButton = document.getElementById('group-membership-btn');
 const groupPosts = document.getElementById('group-posts');
 const groupPostsEmpty = document.getElementById('group-posts-empty');
 const postForm = document.getElementById('group-post-form');
@@ -34,6 +36,24 @@ function showStatus(message) {
 function hideStatus() {
   groupStatus.textContent = '';
   groupStatus.style.display = 'none';
+}
+
+function updateMembershipButton(membership) {
+  if (!membership) {
+    membershipButton.textContent = 'Вступить';
+    membershipButton.disabled = false;
+    membershipButton.dataset.action = 'join';
+    return;
+  }
+  if (membership.role === 'admin') {
+    membershipButton.textContent = 'Вы администратор группы';
+    membershipButton.disabled = true;
+    membershipButton.dataset.action = '';
+    return;
+  }
+  membershipButton.textContent = 'Выйти';
+  membershipButton.disabled = false;
+  membershipButton.dataset.action = 'leave';
 }
 
 function renderPosts(posts) {
@@ -79,7 +99,9 @@ async function loadGroup() {
     groupDescription.textContent =
       group.description || 'Описание пока не добавлено';
     groupCreator.textContent = `Создатель: ${creatorName}`;
+    groupMembersCount.textContent = `Участников: ${group._count.members}`;
 
+    updateMembershipButton(group.members[0]);
     renderPosts(group.posts);
 
     hideStatus();
@@ -107,6 +129,23 @@ postForm.addEventListener('submit', async (event) => {
     await loadGroup();
   } catch (error) {
     postError.textContent = error.message;
+  }
+});
+
+membershipButton.addEventListener('click', async () => {
+  const action = membershipButton.dataset.action;
+  try {
+    membershipButton.disabled = true;
+    if (action === 'join') {
+      await joinGroup(groupId);
+    }
+    if (action === 'leave') {
+      await leaveGroup(groupId);
+    }
+    await loadGroup();
+  } catch (error) {
+    showStatus(error.message);
+    membershipButton.disabled = false;
   }
 });
 
