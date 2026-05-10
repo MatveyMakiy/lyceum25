@@ -97,3 +97,39 @@ export async function leaveGroup(id) {
   }
   return data;
 }
+
+export async function getGroupMembers(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/groups/${id}/members`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось загрузить участников');
+  }
+  return data;
+}
+
+export async function updateGroupMemberRole(groupId, userId, role) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(
+    `${API_URL}/groups/${groupId}/members/${userId}/role`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        role,
+      }),
+    },
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось изменить роль');
+  }
+  return data;
+}

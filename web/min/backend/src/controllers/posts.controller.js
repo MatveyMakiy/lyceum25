@@ -83,24 +83,34 @@ export async function getPosts(req, res) {
 export async function createPost(req, res) {
   try {
     const { content, groupId } = req.body;
-
     if (!content || !content.trim()) {
       return res.status(400).json({
         message: 'Текст поста обязателен',
       });
     }
-
     if (groupId) {
       const group = await prisma.group.findUnique({
         where: { id: groupId },
       });
-
-      if (!group) {
-        return res.status(404).json({
-          message: 'Группа не найдена',
-        });
-      }
+    if (!group) {
+      return res.status(404).json({
+        message: 'Группа не найдена',
+      });
     }
+    const membership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId,
+        },
+      },
+    });
+    if (!membership || !['admin', 'moderator'].includes(membership.role)) {
+      return res.status(403).json({
+        message: 'Публиковать в группе могут только администратор и модераторы',
+      });
+    }
+  }
 
     const post = await prisma.post.create({
       data: {

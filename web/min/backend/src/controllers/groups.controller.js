@@ -178,6 +178,51 @@ export async function getGroupById(req, res) {
   }
 }
 
+export async function getGroupMembers(req, res) {
+  try {
+    const { id } = req.params;
+    const group = await prisma.group.findUnique({
+      where: { id },
+    });
+    if (!group) {
+      return res.status(404).json({
+        message: 'Группа не найдена',
+      });
+    }
+    const members = await prisma.groupMember.findMany({
+      where: {
+        groupId: id,
+      },
+      orderBy: [
+        {
+          role: 'asc',
+        },
+        {
+          joinedAt: 'asc',
+        },
+      ],
+      select: {
+        role: true,
+        joinedAt: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+    return res.json(members);
+  } catch (error) {
+    console.error('Get group members error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
 export async function joinGroup(req, res) {
   try {
     const { id } = req.params;
@@ -255,6 +300,78 @@ export async function leaveGroup(req, res) {
     });
   } catch (error) {
     console.error('Leave group error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function updateGroupMemberRole(req, res) {
+  try {
+    const { id, userId } = req.params;
+    const { role } = req.body;
+    if (!['member', 'moderator'].includes(role)) {
+      return res.status(400).json({
+        message: 'Недопустимая роль',
+      });
+    }
+    const currentMembership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: id,
+        },
+      },
+    });
+    if (!currentMembership || currentMembership.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Изменять роли может только администратор группы',
+      });
+    }
+    const targetMembership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId,
+          groupId: id,
+        },
+      },
+    });
+    if (!targetMembership) {
+      return res.status(404).json({
+        message: 'Участник не найден',
+      });
+    }
+    if (targetMembership.role === 'admin') {
+      return res.status(400).json({
+        message: 'Нельзя изменить роль администратора',
+      });
+    }
+    const updatedMembership = await prisma.groupMember.update({
+      where: {
+        userId_groupId: {
+          userId,
+          groupId: id,
+        },
+      },
+      data: {
+        role,
+      },
+      select: {
+        role: true,
+        joinedAt: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+    return res.json(updatedMembership);
+  } catch (error) {
+    console.error('Update group member role error:', error);
     return res.status(500).json({
       message: 'Ошибка сервера',
     });

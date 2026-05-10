@@ -234,3 +234,58 @@
   color: #777;
   cursor: default;
 }
+
+.group-members-section {
+  margin-top: 32px;
+}
+
+.group-members-section h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.group-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-member-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.group-member-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.group-member-card__name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.group-member-card__role {
+  margin: 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.group-member-card__action {
+  padding: 10px 14px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  cursor: pointer;
+}
+
+.group-member-card__action:hover {
+  background: #f3f3f3;
+}
