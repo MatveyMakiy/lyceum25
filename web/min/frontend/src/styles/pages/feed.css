@@ -100,7 +100,34 @@
 }
 
 .post-card__comments-link {
-  display: inline-block;
+  color: #555;
+}
+
+.post-card__bottom {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   margin-top: 14px;
+}
+
+.post-card__like {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.post-card__like:hover {
+  background: #f3f3f3;
+}
+
+.post-card__like:disabled {
+  color: #999;
+  cursor: default;
+}
+
+.post-card__comments-link {
   color: #555;
 }

@@ -6,7 +6,7 @@ import {
   updateGroupMemberRole,
 } from '../../api/groups.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
-import { createPost, deletePost } from '../../api/posts.js';
+import { createPost, deletePost, togglePostLike } from '../../api/posts.js';
 import { getCurrentUser } from '../../utils/storage.js';
 import { createPostCard } from '../../components/post/postCard.js';
 
@@ -98,10 +98,12 @@ function renderPosts(posts) {
         : 'Неизвестный автор',
       text: post.content,
       date: new Date(post.createdAt).toLocaleString('ru-RU'),
+      likesCount: post._count?.likes || 0,
     };
     groupPosts.appendChild(
       createPostCard(normalizedPost, {
         onDelete: handleDeletePost,
+        onLike: togglePostLike,
       }),
     );
   });

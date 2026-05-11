@@ -5,6 +5,7 @@ import groupsRoutes from './routes/groups.routes.js';
 import postsRoutes from './routes/posts.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import commentsRoutes from './routes/comments.routes.js';
+import likesRoutes from './routes/likes.routes.js';
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use('/api', groupsRoutes);
 app.use('/api', postsRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', commentsRoutes);
+app.use('/api', likesRoutes);
 
 export default app;

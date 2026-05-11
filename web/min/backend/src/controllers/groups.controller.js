@@ -129,6 +129,11 @@ export async function getGroupById(req, res) {
         },
         _count: {
           select: {
+            likes: true,
+          },
+        },
+        _count: {
+          select: {
             members: true,
           },
         },

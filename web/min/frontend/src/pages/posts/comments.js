@@ -1,5 +1,5 @@
 import { deleteComment, createComment, getPostComments } from '../../api/comments.js';
-import { getPostById } from '../../api/posts.js';
+import { getPostById, togglePostLike } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
 import { getCurrentUser } from '../../utils/storage.js';
@@ -41,9 +41,14 @@ function renderCommentedPost(post) {
     text: post.content,
     date: new Date(post.createdAt).toLocaleString('ru-RU'),
     group: post.group,
+    likesCount: post._count?.likes || 0,
   };
   commentedPost.innerHTML = '';
-  commentedPost.appendChild(createPostCard(normalizedPost));
+  commentedPost.appendChild(
+    createPostCard(normalizedPost,{
+      onLike: togglePostLike,
+    })
+  );
 }
 
 function createCommentCard(comment) {

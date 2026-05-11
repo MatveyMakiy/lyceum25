@@ -1,4 +1,4 @@
-import { deletePost, getPosts } from '../../api/posts.js';
+import { deletePost, getPosts, togglePostLike } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
 import { getCurrentUser } from '../../utils/storage.js';
@@ -40,6 +40,7 @@ function renderPosts(posts) {
     postsContainer.appendChild(
       createPostCard(post, {
         onDelete: handleDeletePost,
+        onLike: togglePostLike,
       }),
     );
   });

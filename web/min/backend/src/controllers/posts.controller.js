@@ -59,6 +59,11 @@ export async function getPosts(req, res) {
               name: true,
             },
           },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
       }),
       prisma.post.count({ where }),
@@ -102,6 +107,11 @@ export async function getPostById(req, res) {
           select: {
             id: true,
             name: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
           },
         },
       },

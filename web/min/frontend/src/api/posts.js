@@ -25,6 +25,7 @@ export async function getPosts(page = 1, limit = 2, search = '') {
       text: post.content,
       date: new Date(post.createdAt).toLocaleString('ru-RU'),
       group: post.group,
+      likesCount: post._count?.likes || 0,
     })),
     hasMore: data.hasMore,
     total: data.total,
@@ -99,6 +100,21 @@ export async function getPostById(id) {
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.message || 'Не удалось загрузить пост');
+  }
+  return data;
+}
+
+export async function togglePostLike(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/posts/${id}/like`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось поставить лайк');
   }
   return data;
 }
