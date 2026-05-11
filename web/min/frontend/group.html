@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Группа</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/pages/groups.css" />
+    <link rel="stylesheet" href="/src/styles/pages/feed.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside id="sidebar"></aside>
+
+      <main class="content">
+        <p id="group-status" class="groups-status"></p>
+
+        <section id="group-content" class="group-page">
+          <header class="group-page__header">
+            <div>
+                <h1 id="group-name"></h1>
+                <p id="group-description" class="group-page__description"></p>
+                <p id="group-creator" class="group-page__creator"></p>
+                <p id="group-members-count" class="group-page__members"></p>
+            </div>
+
+            <div class="group-page__actions">
+                <button id="group-membership-btn" type="button"></button>
+            </div>
+          </header>
+
+          <section id="group-post-form-section" class="group-post-form-section">
+            <h2>Написать пост</h2>
+
+            <form id="group-post-form" class="group-post-form">
+              <textarea
+                name="content"
+                placeholder="Напишите что-нибудь..."
+              ></textarea>
+
+              <p id="group-post-error" class="error-text"></p>
+
+              <div class="group-post-form__actions">
+                <button type="submit">Опубликовать</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="group-posts-section">
+            <h2>Публикации</h2>
+            <p id="group-posts-empty" class="group-posts-empty">
+              В этой группе пока нет публикаций
+            </p>
+            <div id="group-posts" class="posts-list"></div>
+          </section>
+          <section class="group-members-section">
+            <h2>Участники</h2>
+            <p id="group-members-error" class="error-text"></p>
+            <div id="group-members-list" class="group-members-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/pages/groups/groupPage.js"></script>
+  </body>
+</html>

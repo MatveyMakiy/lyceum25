@@ -1,0 +1,35 @@
+{
+  "name": "min",
+  "version": "0.2.0",
+  "description": "Версия 0.2.0, с зачатками фронтенда и бекэнда",
+  "main": "index.js",
+  "scripts": {
+  "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+  "start": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
+  "test": "npm test --prefix backend && npm test --prefix frontend",
+  "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+  "format": "npm run format --prefix backend && npm run format --prefix frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@eslint/js": "^9.39.4",
+    "@prisma/client": "^7.6.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "prettier": "^3.8.1",
+    "prisma": "^7.6.0",
+    "vite": "^8.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Создание поста</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/pages/posts.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside id="sidebar"></aside>
+
+      <main class="content">
+        <section class="post-form-page">
+          <h1>Новый пост</h1>
+
+          <form id="create-post-form" class="post-form">
+            <textarea
+              name="content"
+              placeholder="Напишите что-нибудь..."
+            ></textarea>
+
+            <p id="create-post-error" class="error-text"></p>
+
+            <div class="post-form__actions">
+              <a href="/feed.html" class="post-form__cancel">Отмена</a>
+              <button type="submit">Опубликовать</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/pages/posts/createPost.js"></script>
+  </body>
+</html>

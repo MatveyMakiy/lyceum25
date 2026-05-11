@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Редактирование профиля</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/pages/profile.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside id="sidebar"></aside>
+
+      <main class="content">
+        <section class="profile-form-page">
+          <h1>Редактирование профиля</h1>
+
+          <form id="edit-profile-form" class="profile-form">
+            <input name="firstName" type="text" placeholder="Имя" />
+            <input name="lastName" type="text" placeholder="Фамилия" />
+            <input name="class" type="text" placeholder="Класс" />
+
+            <textarea
+              name="bio"
+              placeholder="Расскажите немного о себе"
+            ></textarea>
+
+            <p id="edit-profile-error" class="error-text"></p>
+
+            <div class="profile-form__actions">
+              <a href="/profile.html" class="profile-form__cancel">Отмена</a>
+              <button type="submit">Сохранить</button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/pages/profile/editProfile.js"></script>
+  </body>
+</html>

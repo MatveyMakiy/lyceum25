@@ -1,0 +1,55 @@
+.post-form-page {
+  max-width: 760px;
+}
+
+.post-form-page h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-form textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  resize: vertical;
+  font: inherit;
+}
+
+.post-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-form__cancel,
+.post-form button {
+  padding: 12px 18px;
+  border-radius: 999px;
+}
+
+.post-form__cancel {
+  border: 1px solid #bbb;
+  background: white;
+}
+
+.post-form button {
+  border: none;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.error-text {
+  min-height: 20px;
+  margin: 0;
+  color: #c62828;
+}
