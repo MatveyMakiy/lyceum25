@@ -1,0 +1,141 @@
+.events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.events-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.events-header input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+}
+
+.create-event-link {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+}
+
+.events-status {
+  display: none;
+  margin-top: 40px;
+  text-align: center;
+  color: #777;
+  font-size: 18px;
+}
+
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.event-card {
+  display: block;
+  padding: 20px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.event-card__title {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.event-card__description {
+  margin: 0 0 14px;
+  color: #555;
+}
+
+.event-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #777;
+  font-size: 14px;
+}
+
+.events-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.events-actions button {
+  padding: 12px 20px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  cursor: pointer;
+}
+
+.event-form-page {
+  max-width: 760px;
+}
+
+.event-form-page h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.event-form input,
+.event-form textarea,
+.event-form select {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.event-form textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.event-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.event-form__cancel,
+.event-form button {
+  padding: 12px 18px;
+  border-radius: 999px;
+}
+
+.event-form__cancel {
+  border: 1px solid #bbb;
+  background: white;
+}
+
+.event-form button {
+  border: none;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.error-text {
+  min-height: 20px;
+  margin: 0;
+  color: #c62828;
+}

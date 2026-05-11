@@ -30,6 +30,7 @@ export function renderSidebar(container) {
       <a class="sidebar__link" href="/profile.html">Профиль</a>
       <a class="sidebar__link" href="/groups.html">Группы</a>
       <a class="sidebar__link" href="/users.html">Пользователи</a>
+      <a class="sidebar__link" href="/events.html">Мероприятия</a>
       <a class="sidebar__link" href="/messages.html">Сообщения</a>
     </nav>
 
