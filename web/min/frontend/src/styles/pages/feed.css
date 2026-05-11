@@ -98,3 +98,9 @@
 .post-card__action:hover {
   background: #f3f3f3;
 }
+
+.post-card__comments-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: #555;
+}

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Комментарии</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/pages/feed.css" />
+    <link rel="stylesheet" href="/src/styles/pages/posts.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside id="sidebar"></aside>
+
+      <main class="content">
+        <p id="comments-status" class="comments-status"></p>
+
+        <section id="comments-page" class="comments-page">
+          <h1>Комментарии</h1>
+
+          <div id="commented-post" class="commented-post"></div>
+
+          <section id="comment-form-section" class="comment-form-section">
+            <h2>Написать комментарий</h2>
+
+            <form id="comment-form" class="comment-form">
+              <textarea
+                name="content"
+                placeholder="Напишите комментарий..."
+              ></textarea>
+
+              <p id="comment-error" class="error-text"></p>
+
+              <div class="comment-form__actions">
+                <button type="submit">Отправить</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="comments-list-section">
+            <h2>Все комментарии</h2>
+
+            <p id="comments-empty" class="comments-empty">
+              Комментариев пока нет
+            </p>
+
+            <div id="comments-list" class="comments-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/pages/posts/comments.js"></script>
+  </body>
+</html>

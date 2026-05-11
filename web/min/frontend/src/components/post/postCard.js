@@ -26,6 +26,10 @@ export function createPostCard(post, options = {}) {
     </div>
 
     <div class="post-card__text">${post.text}</div>
+
+    <a class="post-card__comments-link" href="/comments.html?postId=${post.id}">
+      Комментарии
+    </a>
   `;
 
   if (isOwnPost) {
