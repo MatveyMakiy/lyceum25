@@ -24,6 +24,7 @@ model User {
   groupMemberships GroupMember[]
   comments         Comment[]
   likes            Like[]
+  createdEvents    Event[]
 }
 
 model Group {
@@ -38,6 +39,7 @@ model Group {
 
   posts       Post[]
   members     GroupMember[]
+  events      Event[]
 }
 
 model GroupMember {
@@ -89,4 +91,20 @@ model Like {
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@id([userId, postId])
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  location    String?
+  createdBy   String
+  groupId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator User  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
