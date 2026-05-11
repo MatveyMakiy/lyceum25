@@ -22,6 +22,7 @@ model User {
   posts            Post[]
   createdGroups    Group[]
   groupMemberships GroupMember[]
+  comments         Comment[]
 }
 
 model Group {
@@ -59,4 +60,20 @@ model Post {
   group     Group?   @relation(fields: [groupId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  comments Comment[]
+}
+
+model Comment {
+  id              String    @id @default(uuid())
+  content         String
+  authorId        String
+  postId          String
+  parentCommentId String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentComment Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  replies       Comment[] @relation("CommentReplies")
 }
