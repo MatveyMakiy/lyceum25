@@ -139,3 +139,22 @@
   margin: 0;
   color: #c62828;
 }
+
+.event-card__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.event-card__action {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.event-card__action:hover {
+  background: #f3f3f3;
+}

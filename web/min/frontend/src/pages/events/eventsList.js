@@ -1,4 +1,4 @@
-import { getEvents } from '../../api/events.js';
+import { deleteEvent, getEvents } from '../../api/events.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { getCurrentUser } from '../../utils/storage.js';
 
@@ -38,6 +38,7 @@ function formatDate(date) {
 function createEventCard(event) {
   const card = document.createElement('article');
   card.className = 'event-card';
+
   const creatorName = event.creator
     ? `${event.creator.firstName} ${event.creator.lastName}`
     : 'Неизвестный автор';
@@ -60,6 +61,34 @@ function createEventCard(event) {
       <span>Создатель: ${creatorName}</span>
     </div>
   `;
+
+  if (event.canManage) {
+    const actions = document.createElement('div');
+    actions.className = 'event-card__actions';
+    const editLink = document.createElement('a');
+    editLink.className = 'event-card__action';
+    editLink.href = `/edit-event.html?id=${event.id}`;
+    editLink.textContent = 'Редактировать';
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'event-card__action';
+    deleteButton.type = 'button';
+    deleteButton.textContent = 'Удалить';
+    deleteButton.addEventListener('click', async () => {
+      const isConfirmed = window.confirm('Удалить это мероприятие?');
+      if (!isConfirmed) {
+        return;
+      }
+      try {
+        await deleteEvent(event.id);
+        resetEvents();
+      } catch (error) {
+        showStatus(error.message);
+      }
+    });
+    actions.append(editLink, deleteButton);
+    card.appendChild(actions);
+  }
+
   return card;
 }
 

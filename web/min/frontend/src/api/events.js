@@ -37,3 +37,49 @@ export async function createEvent(eventData) {
   }
   return data;
 }
+
+export async function getEventById(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/events/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось загрузить мероприятие');
+  }
+  return data;
+}
+
+export async function updateEvent(id, eventData) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/events/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(eventData),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось изменить мероприятие');
+  }
+  return data;
+}
+
+export async function deleteEvent(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/events/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось удалить мероприятие');
+  }
+  return data;
+}
