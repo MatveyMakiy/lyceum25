@@ -25,6 +25,7 @@ model User {
   comments         Comment[]
   likes            Like[]
   createdEvents    Event[]
+  eventParticipants EventParticipant[]
 }
 
 model Group {
@@ -107,4 +108,17 @@ model Event {
 
   creator User  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  participants EventParticipant[]
+}
+
+model EventParticipant {
+  userId   String
+  eventId  String
+  joinedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([userId, eventId])
 }
