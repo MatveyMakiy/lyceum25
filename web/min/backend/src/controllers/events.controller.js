@@ -17,6 +17,16 @@ async function canManageEvent(userId, event) {
   );
 }
 
+function formatEventResponse(event, userId) {
+  return {
+    ...event,
+    participantsCount: event._count?.participants || 0,
+    isParticipating: event.participants?.some(
+      (participant) => participant.userId === userId,
+    ),
+  };
+}
+
 export async function getEvents(req, res) {
   try {
     const page = Number(req.query.page) || 1;
@@ -81,13 +91,26 @@ export async function getEvents(req, res) {
               name: true,
             },
           },
+          _count: {
+            select: {
+              participants: true,
+            },
+          },
+          participants: {
+            where: {
+              userId: req.user.id,
+            },
+            select: {
+              userId: true,
+            },
+          },
         },
       }),
       prisma.event.count({ where }),
     ]);
     const eventsWithPermissions = await Promise.all(
       events.map(async (event) => ({
-        ...event,
+        ...formatEventResponse(event, req.user.id),
         canManage: await canManageEvent(req.user.id, event),
       })),
     );
@@ -136,6 +159,19 @@ export async function getEventById(req, res) {
             name: true,
           },
         },
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
+        participants: {
+          where: {
+            userId: req.user.id,
+          },
+          select: {
+            userId: true,
+          },
+        },
       },
     });
     if (!event) {
@@ -144,7 +180,7 @@ export async function getEventById(req, res) {
       });
     }
     return res.json({
-      ...event,
+      ...formatEventResponse(event, req.user.id),
       canManage: await canManageEvent(req.user.id, event),
     });
   } catch (error) {
@@ -233,10 +269,23 @@ export async function createEvent(req, res) {
             name: true,
           },
         },
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
+        participants: {
+          where: {
+            userId: req.user.id,
+          },
+          select: {
+            userId: true,
+          },
+        },
       },
     });
     return res.status(201).json({
-      ...event,
+      ...formatEventResponse(event, req.user.id),
       canManage: true,
     });
   } catch (error) {
@@ -262,7 +311,8 @@ export async function updateEvent(req, res) {
     const allowed = await canManageEvent(req.user.id, event);
     if (!allowed) {
       return res.status(403).json({
-        message: 'Редактировать мероприятие может только создатель, администратор или модератор группы',
+        message:
+          'Редактировать мероприятие может только создатель, администратор или модератор группы',
       });
     }
     if (!title || !title.trim()) {
@@ -309,10 +359,23 @@ export async function updateEvent(req, res) {
             name: true,
           },
         },
+        _count: {
+          select: {
+            participants: true,
+          },
+        },
+        participants: {
+          where: {
+            userId: req.user.id,
+          },
+          select: {
+            userId: true,
+          },
+        },
       },
     });
     return res.json({
-      ...updatedEvent,
+      ...formatEventResponse(updatedEvent, req.user.id),
       canManage: true,
     });
   } catch (error) {
@@ -337,7 +400,8 @@ export async function deleteEvent(req, res) {
     const allowed = await canManageEvent(req.user.id, event);
     if (!allowed) {
       return res.status(403).json({
-        message: 'Удалить мероприятие может только создатель, администратор или модератор группы',
+        message:
+          'Удалить мероприятие может только создатель, администратор или модератор группы',
       });
     }
     await prisma.event.delete({
@@ -348,6 +412,96 @@ export async function deleteEvent(req, res) {
     });
   } catch (error) {
     console.error('Delete event error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function joinEvent(req, res) {
+  try {
+    const { id } = req.params;
+    const event = await prisma.event.findUnique({
+      where: { id },
+    });
+    if (!event) {
+      return res.status(404).json({
+        message: 'Мероприятие не найдено',
+      });
+    }
+    const existingParticipant = await prisma.eventParticipant.findUnique({
+      where: {
+        userId_eventId: {
+          userId: req.user.id,
+          eventId: id,
+        },
+      },
+    });
+    if (existingParticipant) {
+      return res.status(400).json({
+        message: 'Вы уже записаны на мероприятие',
+      });
+    }
+    await prisma.eventParticipant.create({
+      data: {
+        userId: req.user.id,
+        eventId: id,
+      },
+    });
+    const participantsCount = await prisma.eventParticipant.count({
+      where: {
+        eventId: id,
+      },
+    });
+    return res.status(201).json({
+      message: 'Вы записались на мероприятие',
+      isParticipating: true,
+      participantsCount,
+    });
+  } catch (error) {
+    console.error('Join event error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function leaveEvent(req, res) {
+  try {
+    const { id } = req.params;
+    const participant = await prisma.eventParticipant.findUnique({
+      where: {
+        userId_eventId: {
+          userId: req.user.id,
+          eventId: id,
+        },
+      },
+    });
+    if (!participant) {
+      return res.status(404).json({
+        message: 'Вы не записаны на мероприятие',
+      });
+    }
+    await prisma.eventParticipant.delete({
+      where: {
+        userId_eventId: {
+          userId: req.user.id,
+          eventId: id,
+        },
+      },
+    });
+    const participantsCount = await prisma.eventParticipant.count({
+      where: {
+        eventId: id,
+      },
+    });
+    return res.json({
+      message: 'Запись на мероприятие отменена',
+      isParticipating: false,
+      participantsCount,
+    });
+  } catch (error) {
+    console.error('Leave event error:', error);
     return res.status(500).json({
       message: 'Ошибка сервера',
     });

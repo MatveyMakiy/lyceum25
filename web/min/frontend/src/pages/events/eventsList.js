@@ -1,4 +1,9 @@
-import { deleteEvent, getEvents } from '../../api/events.js';
+import {
+  deleteEvent,
+  getEvents,
+  joinEvent,
+  leaveEvent,
+} from '../../api/events.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { getCurrentUser } from '../../utils/storage.js';
 
@@ -35,10 +40,27 @@ function formatDate(date) {
   return new Date(date).toLocaleString('ru-RU');
 }
 
+async function handleJoinEvent(eventId) {
+  try {
+    await joinEvent(eventId);
+    resetEvents();
+  } catch (error) {
+    showStatus(error.message);
+  }
+}
+
+async function handleLeaveEvent(eventId) {
+  try {
+    await leaveEvent(eventId);
+    resetEvents();
+  } catch (error) {
+    showStatus(error.message);
+  }
+}
+
 function createEventCard(event) {
   const card = document.createElement('article');
   card.className = 'event-card';
-
   const creatorName = event.creator
     ? `${event.creator.firstName} ${event.creator.lastName}`
     : 'Неизвестный автор';
@@ -59,12 +81,27 @@ function createEventCard(event) {
       <span>Место: ${event.location || 'Не указано'}</span>
       <span>Группа: ${event.group?.name || 'Не указана'}</span>
       <span>Создатель: ${creatorName}</span>
+      <span>Участников: ${event.participantsCount || 0}</span>
     </div>
   `;
-
+  const actions = document.createElement('div');
+  actions.className = 'event-card__actions';
+  const participantButton = document.createElement('button');
+  participantButton.className = 'event-card__action';
+  participantButton.type = 'button';
+  if (event.isParticipating) {
+    participantButton.textContent = 'Отменить запись';
+    participantButton.addEventListener('click', () => {
+      handleLeaveEvent(event.id);
+    });
+  } else {
+    participantButton.textContent = 'Записаться';
+    participantButton.addEventListener('click', () => {
+      handleJoinEvent(event.id);
+    });
+  }
+  actions.appendChild(participantButton);
   if (event.canManage) {
-    const actions = document.createElement('div');
-    actions.className = 'event-card__actions';
     const editLink = document.createElement('a');
     editLink.className = 'event-card__action';
     editLink.href = `/edit-event.html?id=${event.id}`;
@@ -86,9 +123,8 @@ function createEventCard(event) {
       }
     });
     actions.append(editLink, deleteButton);
-    card.appendChild(actions);
   }
-
+  card.appendChild(actions);
   return card;
 }
 
@@ -104,6 +140,7 @@ function updateEmptyState(total) {
     hideStatus();
     return;
   }
+
   if (currentSearch) {
     showStatus('По вашему запросу ничего не найдено');
   } else {

@@ -83,3 +83,33 @@ export async function deleteEvent(id) {
   }
   return data;
 }
+
+export async function joinEvent(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/events/${id}/join`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось записаться на мероприятие');
+  }
+  return data;
+}
+
+export async function leaveEvent(id) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/events/${id}/leave`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось отменить запись');
+  }
+  return data;
+}
