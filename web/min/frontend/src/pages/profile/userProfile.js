@@ -1,6 +1,7 @@
 import { getUserById } from '../../api/users.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { getCurrentUser } from '../../utils/storage.js';
+import { createDirectChat } from '../../api/chats.js';
 
 const currentUser = getCurrentUser();
 
@@ -15,6 +16,8 @@ const profileInitials = document.getElementById('user-profile-initials');
 const profileName = document.getElementById('user-profile-name');
 const profileClass = document.getElementById('user-profile-class');
 const profileBio = document.getElementById('user-profile-bio');
+const startChatButton = document.getElementById('start-chat-btn');
+const startChatError = document.getElementById('start-chat-error');
 
 const params = new URLSearchParams(window.location.search);
 const userId = params.get('id');
@@ -62,5 +65,15 @@ async function loadProfile() {
     showStatus(error.message);
   }
 }
+
+startChatButton.addEventListener('click', async () => {
+  try {
+    startChatError.textContent = '';
+    const chat = await createDirectChat(userId);
+    window.location.href = `/chat.html?id=${chat.id}`;
+  } catch (error) {
+    startChatError.textContent = error.message;
+  }
+});
 
 loadProfile();

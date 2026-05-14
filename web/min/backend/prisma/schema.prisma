@@ -41,6 +41,8 @@ model Group {
   posts       Post[]
   members     GroupMember[]
   events      Event[]
+  chatMemberships ChatMember[]
+  chatMessages    ChatMessage[]
 }
 
 model GroupMember {
@@ -121,4 +123,38 @@ model EventParticipant {
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@id([userId, eventId])
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  type      String   @default("direct")
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  ChatMember[]
+  messages ChatMessage[]
+}
+
+model ChatMember {
+  userId   String
+  chatId   String
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@id([userId, chatId])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  content   String
+  authorId  String
+  chatId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
 }
