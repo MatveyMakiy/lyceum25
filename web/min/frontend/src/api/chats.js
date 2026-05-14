@@ -65,3 +65,18 @@ export async function sendChatMessage(chatId, content) {
   }
   return data;
 }
+
+export async function getOrCreateGroupChat(groupId) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/groups/${groupId}/chat`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось открыть чат группы');
+  }
+  return data;
+}

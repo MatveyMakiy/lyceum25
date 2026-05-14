@@ -9,6 +9,7 @@ import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPost, deletePost, togglePostLike } from '../../api/posts.js';
 import { getCurrentUser } from '../../utils/storage.js';
 import { createPostCard } from '../../components/post/postCard.js';
+import { getOrCreateGroupChat } from '../../api/chats.js';
 
 const currentUser = getCurrentUser();
 
@@ -31,6 +32,7 @@ const postForm = document.getElementById('group-post-form');
 const postError = document.getElementById('group-post-error');
 const groupMembersList = document.getElementById('group-members-list');
 const groupMembersError = document.getElementById('group-members-error');
+const groupChatButton = document.getElementById('group-chat-btn');
 
 const params = new URLSearchParams(window.location.search);
 const groupId = params.get('id');
@@ -57,6 +59,14 @@ function getRoleLabel(role) {
     return 'Модератор';
   }
   return 'Участник';
+}
+
+function updateGroupChatButton(membership) {
+  if (!membership) {
+    groupChatButton.style.display = 'none';
+    return;
+  }
+  groupChatButton.style.display = 'block';
 }
 
 function updateMembershipButton(membership) {
@@ -185,6 +195,7 @@ async function loadGroup() {
     groupMembersCount.textContent = `Участников: ${group._count.members}`;
     updateMembershipButton(currentMembership);
     updatePostFormVisibility(currentMembership);
+    updateGroupChatButton(currentMembership);
     renderPosts(group.posts);
     await loadMembers();
     hideStatus();
@@ -240,5 +251,14 @@ async function handleDeletePost(id) {
     showStatus(error.message);
   }
 }
+
+groupChatButton.addEventListener('click', async () => {
+  try {
+    const chat = await getOrCreateGroupChat(groupId);
+    window.location.href = `/chat.html?id=${chat.id}`;
+  } catch (error) {
+    showStatus(error.message);
+  }
+});
 
 loadGroup();

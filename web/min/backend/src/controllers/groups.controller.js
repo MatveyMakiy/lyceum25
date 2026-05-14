@@ -259,6 +259,20 @@ export async function joinGroup(req, res) {
         role: 'member',
       },
     });
+    const groupChat = await prisma.chat.findFirst({
+      where: {
+        type: 'group',
+        groupId: id,
+      },
+    });
+  if (groupChat) {
+    await prisma.chatMember.create({
+      data: {
+        userId: req.user.id,
+        chatId: groupChat.id,
+      },
+    });
+  }
     return res.status(201).json({
       message: 'Вы вступили в группу',
     });
@@ -290,6 +304,20 @@ export async function leaveGroup(req, res) {
     if (membership.role === 'admin') {
       return res.status(400).json({
         message: 'Администратор не может выйти из своей группы',
+      });
+    }
+    const groupChat = await prisma.chat.findFirst({
+      where: {
+        type: 'group',
+        groupId: id,
+      },
+    });
+    if (groupChat) {
+      await prisma.chatMember.deleteMany({
+        where: {
+          userId: req.user.id,
+          chatId: groupChat.id,
+        },
       });
     }
     await prisma.groupMember.delete({

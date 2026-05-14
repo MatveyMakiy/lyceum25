@@ -45,6 +45,7 @@ model Group {
   events          Event[]
   chatMemberships ChatMember[]
   chatMessages    ChatMessage[]
+  chats Chat[]
 }
 
 model GroupMember {
@@ -129,6 +130,7 @@ model EventParticipant {
 
 model Chat {
   id        String   @id @default(uuid())
+  groupId String?
   type      String   @default("direct")
   title     String?
   createdAt DateTime @default(now())
@@ -136,6 +138,7 @@ model Chat {
 
   members  ChatMember[]
   messages ChatMessage[]
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model ChatMember {

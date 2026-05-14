@@ -220,6 +220,12 @@
   font-size: 14px;
 }
 
+.group-page__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .group-page__actions button {
   padding: 12px 18px;
   border: none;
