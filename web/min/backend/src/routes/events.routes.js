@@ -4,6 +4,7 @@ import {
   deleteEvent,
   getEventById,
   getEvents,
+  getPublicEvents,
   joinEvent,
   leaveEvent,
   updateEvent,
@@ -11,6 +12,8 @@ import {
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = Router();
+
+router.get('/public/events', getPublicEvents);
 
 router.get('/events', authMiddleware, getEvents);
 router.post('/events', authMiddleware, createEvent);

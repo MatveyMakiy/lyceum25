@@ -1,7 +1,10 @@
+import { getFeedEvents } from '../../api/events.js';
 import { deletePost, getPosts, togglePostLike } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
 import { getCurrentUser } from '../../utils/storage.js';
+
+const currentUser = getCurrentUser();
 
 const sidebarContainer = document.getElementById('sidebar');
 const postsContainer = document.getElementById('posts');
@@ -9,6 +12,8 @@ const postsStatus = document.getElementById('posts-status');
 const loadMoreButton = document.getElementById('load-more-btn');
 const searchInput = document.getElementById('feed-search');
 const createPostLink = document.getElementById('create-post-link');
+const feedEventsStatus = document.getElementById('feed-events-status');
+const feedEventsList = document.getElementById('feed-events-list');
 
 let currentPage = 1;
 const limit = 2;
@@ -17,10 +22,16 @@ let loadedPosts = [];
 
 renderSidebar(sidebarContainer);
 
-const currentUser = getCurrentUser();
-
 if (!currentUser && createPostLink) {
   createPostLink.style.display = 'none';
+}
+
+if (!currentUser && searchInput) {
+  searchInput.style.display = 'none';
+}
+
+if (!currentUser && loadMoreButton) {
+  loadMoreButton.style.display = 'none';
 }
 
 function showStatus(message) {
@@ -31,6 +42,57 @@ function showStatus(message) {
 function hideStatus() {
   postsStatus.textContent = '';
   postsStatus.style.display = 'none';
+}
+
+function showEventsStatus(message) {
+  feedEventsStatus.textContent = message;
+  feedEventsStatus.style.display = 'block';
+}
+
+function hideEventsStatus() {
+  feedEventsStatus.textContent = '';
+  feedEventsStatus.style.display = 'none';
+}
+
+function formatDate(date) {
+  return new Date(date).toLocaleString('ru-RU');
+}
+
+function createFeedEventCard(event) {
+  const card = document.createElement('article');
+  card.className = 'feed-event-card';
+  card.innerHTML = `
+    <h3 class="feed-event-card__title">${event.title}</h3>
+    <div class="feed-event-card__meta">
+      <span>Дата: ${formatDate(event.startTime)}</span>
+      <span>Группа: ${
+        event.group?.name || (event.isPublic ? 'Администрация' : 'Не указана')
+      }</span>
+      <span>Место: ${event.location || 'Не указано'}</span>
+    </div>
+  `;
+  return card;
+}
+function renderFeedEvents(events) {
+  feedEventsList.innerHTML = '';
+  if (events.length === 0) {
+    showEventsStatus('Пока нет ближайших публичных мероприятий');
+    return;
+  }
+  hideEventsStatus();
+  events.forEach((event) => {
+    feedEventsList.appendChild(createFeedEventCard(event));
+  });
+}
+
+async function loadFeedEvents() {
+  try {
+    showEventsStatus('Загрузка мероприятий...');
+    const events = await getFeedEvents(3);
+    renderFeedEvents(events);
+  } catch (error) {
+    showEventsStatus(error.message);
+  }
 }
 
 function renderPosts(posts) {
@@ -54,23 +116,16 @@ function updateEmptyState(total) {
   if (currentSearch) {
     showStatus('По вашему запросу ничего не найдено');
   } else {
-    showStatus('Пока публикаций нет');
-  }
-}
-
-async function handleDeletePost(id) {
-  try {
-    await deletePost(id);
-    resetFeed();
-  } catch (error) {
-    showStatus(error.message);
+    showStatus(
+      'В вашей ленте пока нет публикаций и мероприятий. Вступите в группы, чтобы видеть их новости.',
+    );
   }
 }
 
 async function loadPage() {
   try {
     if (currentPage === 1) {
-      showStatus('Загрузка...');
+      showStatus('Загрузка публикаций...');
       postsContainer.innerHTML = '';
     }
     loadMoreButton.disabled = true;
@@ -95,16 +150,32 @@ function resetFeed() {
   loadPage();
 }
 
-let searchTimeout;
-
-searchInput.addEventListener('input', (event) => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    currentSearch = event.target.value.trim();
+async function handleDeletePost(id) {
+  try {
+    await deletePost(id);
     resetFeed();
-  }, 300);
-});
+  } catch (error) {
+    showStatus(error.message);
+  }
+}
 
-loadMoreButton.addEventListener('click', loadPage);
+if (currentUser) {
+  searchInput.addEventListener('input', (event) => {
+    clearTimeout(searchTimeout);
 
-loadPage();
+    searchTimeout = setTimeout(() => {
+      currentSearch = event.target.value.trim();
+      resetFeed();
+    }, 300);
+  });
+  loadMoreButton.addEventListener('click', loadPage);
+}
+
+let searchTimeout;
+loadFeedEvents();
+
+if (currentUser) {
+  loadPage();
+} else {
+  showStatus('Войдите, чтобы видеть публикации ваших сообществ.');
+}

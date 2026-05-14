@@ -1,6 +1,7 @@
 import { API_URL } from '../api.js';
 
 export async function getPosts(page = 1, limit = 2, search = '') {
+  const token = localStorage.getItem('token');
   const params = new URLSearchParams({
     page,
     limit,
@@ -8,13 +9,15 @@ export async function getPosts(page = 1, limit = 2, search = '') {
   if (search.trim()) {
     params.set('search', search.trim());
   }
-  const response = await fetch(`${API_URL}/posts?${params.toString()}`);
+  const response = await fetch(`${API_URL}/posts?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await response.json();
-
   if (!response.ok) {
     throw new Error(data.message || 'Не удалось загрузить посты');
   }
-
   return {
     items: data.items.map((post) => ({
       id: post.id,

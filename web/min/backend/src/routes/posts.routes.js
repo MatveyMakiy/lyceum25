@@ -10,7 +10,7 @@ import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-router.get('/posts', getPosts);
+router.get('/posts', authMiddleware, getPosts);
 router.get('/posts/:id', getPostById);
 router.post('/posts', authMiddleware, createPost);
 router.put('/posts/:id', authMiddleware, updatePost);

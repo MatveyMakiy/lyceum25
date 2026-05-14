@@ -6,7 +6,29 @@ export async function getPosts(req, res) {
     const limit = Number(req.query.limit) || 2;
     const search = req.query.search?.trim() || '';
     const skip = (page - 1) * limit;
-    const where = search
+    const memberships = await prisma.groupMember.findMany({
+      where: {
+        userId: req.user.id,
+      },
+      select: {
+        groupId: true,
+      },
+    });
+    const groupIds = memberships.map((membership) => membership.groupId);
+    const visibilityWhere = {
+      OR: [
+        {
+          authorId: req.user.id,
+          groupId: null,
+        },
+        {
+          groupId: {
+            in: groupIds,
+          },
+        },
+      ],
+    };
+    const searchWhere = search
       ? {
           OR: [
             {
@@ -28,10 +50,21 @@ export async function getPosts(req, res) {
                 },
               },
             },
+            {
+              group: {
+                name: {
+                  contains: search,
+                },
+              },
+            },
           ],
         }
       : {};
-
+    const where = search
+      ? {
+          AND: [visibilityWhere, searchWhere],
+        }
+      : visibilityWhere;
     const [posts, total] = await Promise.all([
       prisma.post.findMany({
         where,
@@ -68,7 +101,6 @@ export async function getPosts(req, res) {
       }),
       prisma.post.count({ where }),
     ]);
-
     return res.json({
       items: posts,
       total,
@@ -78,7 +110,6 @@ export async function getPosts(req, res) {
     });
   } catch (error) {
     console.error('Get posts error:', error);
-
     return res.status(500).json({
       message: 'Ошибка сервера',
     });

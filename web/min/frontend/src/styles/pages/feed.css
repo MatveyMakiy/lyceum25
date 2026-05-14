@@ -131,3 +131,53 @@
 .post-card__comments-link {
   color: #555;
 }
+
+.feed-events {
+  margin-bottom: 32px;
+}
+
+.feed-events__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.feed-events__header h2 {
+  margin: 0;
+}
+
+.feed-events__header a {
+  color: #555;
+}
+
+.feed-events-status {
+  display: none;
+  color: #777;
+}
+
+.feed-events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.feed-event-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.feed-event-card__title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.feed-event-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #777;
+  font-size: 14px;
+}

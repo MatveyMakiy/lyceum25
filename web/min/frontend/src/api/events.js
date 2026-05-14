@@ -113,3 +113,37 @@ export async function leaveEvent(id) {
   }
   return data;
 }
+
+export async function getFeedEvents(limit = 4) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return getPublicEvents(limit);
+  }
+  const params = new URLSearchParams({
+    page: 1,
+    limit,
+    scope: 'my',
+  });
+  const response = await fetch(`${API_URL}/events?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось загрузить мероприятия');
+  }
+  return data.items;
+}
+
+export async function getPublicEvents(limit = 3) {
+  const params = new URLSearchParams({
+    limit,
+  });
+  const response = await fetch(`${API_URL}/public/events?${params.toString()}`);
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось загрузить публичные мероприятия');
+  }
+  return data.items;
+}
