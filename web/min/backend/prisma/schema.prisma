@@ -19,13 +19,15 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  posts            Post[]
-  createdGroups    Group[]
-  groupMemberships GroupMember[]
-  comments         Comment[]
-  likes            Like[]
-  createdEvents    Event[]
+  posts             Post[]
+  createdGroups     Group[]
+  groupMemberships  GroupMember[]
+  comments          Comment[]
+  likes             Like[]
+  createdEvents     Event[]
   eventParticipants EventParticipant[]
+  chatMembers       ChatMember[]
+  chatMessages      ChatMessage[]
 }
 
 model Group {
@@ -38,9 +40,9 @@ model Group {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  posts       Post[]
-  members     GroupMember[]
-  events      Event[]
+  posts           Post[]
+  members         GroupMember[]
+  events          Event[]
   chatMemberships ChatMember[]
   chatMessages    ChatMessage[]
 }
@@ -58,26 +60,26 @@ model GroupMember {
 }
 
 model Post {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   content   String
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
   groupId   String?
-  group     Group?   @relation(fields: [groupId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  comments Comment[]
-  likes Like[]
+  group     Group?    @relation(fields: [groupId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+  likes     Like[]
 }
 
 model Comment {
-  id              String    @id @default(uuid())
+  id              String   @id @default(uuid())
   content         String
   authorId        String
   postId          String
   parentCommentId String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -97,7 +99,7 @@ model Like {
 }
 
 model Event {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
   startTime   DateTime
@@ -105,12 +107,12 @@ model Event {
   location    String?
   createdBy   String
   groupId     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   creator User  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  
+
   participants EventParticipant[]
 }
 
@@ -141,8 +143,10 @@ model ChatMember {
   chatId   String
   joinedAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
 
   @@id([userId, chatId])
 }
@@ -155,6 +159,8 @@ model ChatMessage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
 }
