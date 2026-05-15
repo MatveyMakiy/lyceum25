@@ -33,6 +33,7 @@ const postError = document.getElementById('group-post-error');
 const groupMembersList = document.getElementById('group-members-list');
 const groupMembersError = document.getElementById('group-members-error');
 const groupChatButton = document.getElementById('group-chat-btn');
+const editGroupLink = document.getElementById('edit-group-link');
 
 const params = new URLSearchParams(window.location.search);
 const groupId = params.get('id');
@@ -59,6 +60,15 @@ function getRoleLabel(role) {
     return 'Модератор';
   }
   return 'Участник';
+}
+
+function updateEditGroupLink(membership) {
+  if (membership?.role !== 'admin') {
+    editGroupLink.style.display = 'none';
+    return;
+  }
+  editGroupLink.href = `/edit-group.html?id=${groupId}`;
+  editGroupLink.style.display = 'block';
 }
 
 function updateGroupChatButton(membership) {
@@ -196,6 +206,7 @@ async function loadGroup() {
     updateMembershipButton(currentMembership);
     updatePostFormVisibility(currentMembership);
     updateGroupChatButton(currentMembership);
+    updateEditGroupLink(currentMembership);
     renderPosts(group.posts);
     await loadMembers();
     hideStatus();

@@ -133,3 +133,20 @@ export async function updateGroupMemberRole(groupId, userId, role) {
   }
   return data;
 }
+
+export async function updateGroup(id, groupData) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/groups/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(groupData),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Не удалось обновить группу');
+  }
+  return data;
+}

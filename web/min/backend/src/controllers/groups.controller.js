@@ -410,3 +410,60 @@ export async function updateGroupMemberRole(req, res) {
     });
   }
 }
+
+export async function updateGroup(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, description, avatarUrl } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        message: 'Название группы обязательно',
+      });
+    }
+    const membership = await prisma.groupMember.findUnique({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: id,
+        },
+      },
+    });
+    if (!membership || membership.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Редактировать группу может только администратор группы',
+      });
+    }
+    const group = await prisma.group.update({
+      where: {
+        id,
+      },
+      data: {
+        name: name.trim(),
+        description: description?.trim() || null,
+        avatarUrl: avatarUrl?.trim() || null,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        avatarUrl: true,
+        createdAt: true,
+        updatedAt: true,
+        creator: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
+    });
+    return res.json(group);
+  } catch (error) {
+    console.error('Update group error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}

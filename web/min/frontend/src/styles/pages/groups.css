@@ -295,3 +295,16 @@
 .group-member-card__action:hover {
   background: #f3f3f3;
 }
+
+.group-page__edit-link {
+  display: none;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+  text-align: center;
+}
+
+.group-page__edit-link:hover {
+  background: #444;
+}
