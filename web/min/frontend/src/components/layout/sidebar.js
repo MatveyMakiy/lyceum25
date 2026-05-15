@@ -13,7 +13,7 @@ export function renderSidebar(container) {
         <a class="sidebar__link" href="/feed.html">Лента</a>
       </nav>
 
-      <div class="sidebar__auth">
+      <div class="sidebar__bottom">
         <a class="sidebar__link" href="/login.html">Войти</a>
         <a class="sidebar__link" href="/register.html">Регистрация</a>
       </div>
@@ -36,10 +36,13 @@ export function renderSidebar(container) {
         isAdmin
           ? '<a class="sidebar__link" href="/admin.html">Админка</a>'
           : ''
-        }
-      </nav>
-
-    <button class="sidebar__logout" id="logout-btn" type="button">Выйти</button>
+      }
+    </nav>
+    <div class="sidebar__bottom">
+      <button class="sidebar__logout" id="logout-btn" type="button">
+        Выйти
+      </button>
+    </div>
   `;
 
   const logoutButton = document.getElementById('logout-btn');
