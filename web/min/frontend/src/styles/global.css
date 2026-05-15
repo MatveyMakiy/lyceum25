@@ -168,3 +168,59 @@ body.dark-theme .admin-item__delete:hover,
 body.dark-theme .admin-item__role:hover {
   background: var(--soft-bg-hover);
 }
+
+@media (max-width: 768px) {
+  .feed-header,
+  .events-header,
+  .groups-header,
+  .users-header,
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .feed-header__actions,
+  .events-header__actions,
+  .groups-header__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .feed-header input,
+  .events-header input,
+  .groups-header input,
+  .users-header input {
+    width: 100%;
+  }
+
+  .events-list,
+  .groups-list,
+  .users-list,
+  .feed-events-list,
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .post-card__top,
+  .comment-card__top,
+  .admin-item {
+    flex-direction: column;
+  }
+
+  .event-card__actions,
+  .post-card__actions,
+  .admin-item__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .event-card__action,
+  .post-card__action,
+  .admin-item__delete,
+  .admin-item__role {
+    width: 100%;
+    text-align: center;
+  }
+}
