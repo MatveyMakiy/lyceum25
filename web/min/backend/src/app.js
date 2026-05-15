@@ -8,6 +8,7 @@ import commentsRoutes from './routes/comments.routes.js';
 import likesRoutes from './routes/likes.routes.js';
 import eventsRoutes from './routes/events.routes.js';
 import chatsRoutes from './routes/chats.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use('/api', commentsRoutes);
 app.use('/api', likesRoutes);
 app.use('/api', eventsRoutes);
 app.use('/api', chatsRoutes);
+app.use('/api', adminRoutes);
 
 export default app;

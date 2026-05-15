@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админка</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/pages/admin.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside id="sidebar"></aside>
+      <main class="content">
+        <header class="admin-header">
+          <h1>Админка</h1>
+          <p>Статистика проекта и управление контентом</p>
+        </header>
+        <p id="admin-status" class="admin-status"></p>
+        <section id="admin-content" class="admin-page">
+          <section class="admin-stats">
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Пользователи</span>
+              <strong id="stats-users">0</strong>
+            </article>
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Группы</span>
+              <strong id="stats-groups">0</strong>
+            </article>
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Посты</span>
+              <strong id="stats-posts">0</strong>
+            </article>
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Комментарии</span>
+              <strong id="stats-comments">0</strong>
+            </article>
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Мероприятия</span>
+              <strong id="stats-events">0</strong>
+            </article>
+            <article class="admin-stat-card">
+              <span class="admin-stat-card__label">Чаты</span>
+              <strong id="stats-chats">0</strong>
+            </article>
+          </section>
+          <section class="admin-section">
+            <h2>Последние посты</h2>
+            <div id="admin-posts" class="admin-list"></div>
+          </section>
+          <section class="admin-section">
+            <h2>Последние комментарии</h2>
+            <div id="admin-comments" class="admin-list"></div>
+          </section>
+          <section class="admin-section">
+            <h2>Последние группы</h2>
+            <div id="admin-groups" class="admin-list"></div>
+          </section>
+          <section class="admin-section">
+            <h2>Ближайшие мероприятия</h2>
+            <div id="admin-events" class="admin-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/pages/admin/admin.js"></script>
+  </body>
+</html>

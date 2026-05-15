@@ -2,7 +2,7 @@ import { getCurrentUser, removeCurrentUser } from '../../utils/storage.js';
 
 export function renderSidebar(container) {
   const currentUser = getCurrentUser();
-
+  const isAdmin = currentUser?.role === 'admin';
   container.classList.add('sidebar');
 
   if (!currentUser) {
@@ -32,7 +32,12 @@ export function renderSidebar(container) {
       <a class="sidebar__link" href="/users.html">Пользователи</a>
       <a class="sidebar__link" href="/events.html">Мероприятия</a>
       <a class="sidebar__link" href="/messages.html">Сообщения</a>
-    </nav>
+      ${
+        isAdmin
+          ? '<a class="sidebar__link" href="/admin.html">Админка</a>'
+          : ''
+        }
+      </nav>
 
     <button class="sidebar__logout" id="logout-btn" type="button">Выйти</button>
   `;
