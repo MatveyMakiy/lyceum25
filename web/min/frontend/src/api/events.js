@@ -143,7 +143,9 @@ export async function getPublicEvents(limit = 3) {
   const response = await fetch(`${API_URL}/public/events?${params.toString()}`);
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || 'Не удалось загрузить публичные мероприятия');
+    throw new Error(
+      data.message || 'Не удалось загрузить публичные мероприятия',
+    );
   }
   return data.items;
 }

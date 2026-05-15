@@ -36,7 +36,8 @@ async function loadEvent() {
   try {
     const event = await getEventById(eventId);
     if (!event.canManage) {
-      errorBox.textContent = 'У вас нет прав на редактирование этого мероприятия';
+      errorBox.textContent =
+        'У вас нет прав на редактирование этого мероприятия';
       form.querySelector('button[type="submit"]').disabled = true;
       return;
     }

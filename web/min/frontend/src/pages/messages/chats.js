@@ -56,7 +56,9 @@ function createChatCard(chat) {
 function renderChats(chats) {
   chatsList.innerHTML = '';
   if (chats.length === 0) {
-    showStatus('Чатов пока нет. Откройте профиль пользователя и начните диалог.');
+    showStatus(
+      'Чатов пока нет. Откройте профиль пользователя и начните диалог.',
+    );
     return;
   }
   hideStatus();

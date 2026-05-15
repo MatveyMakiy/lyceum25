@@ -1,4 +1,8 @@
-import { deleteComment, createComment, getPostComments } from '../../api/comments.js';
+import {
+  deleteComment,
+  createComment,
+  getPostComments,
+} from '../../api/comments.js';
 import { getPostById, togglePostLike } from '../../api/posts.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
 import { createPostCard } from '../../components/post/postCard.js';
@@ -45,9 +49,9 @@ function renderCommentedPost(post) {
   };
   commentedPost.innerHTML = '';
   commentedPost.appendChild(
-    createPostCard(normalizedPost,{
+    createPostCard(normalizedPost, {
       onLike: togglePostLike,
-    })
+    }),
   );
 }
 

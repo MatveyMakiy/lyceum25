@@ -30,8 +30,18 @@ router.patch(
   adminMiddleware,
   adminUpdateUserRole,
 );
-router.delete('/admin/users/:id', authMiddleware, adminMiddleware, adminDeleteUser);
-router.delete('/admin/posts/:id', authMiddleware, adminMiddleware, adminDeletePost);
+router.delete(
+  '/admin/users/:id',
+  authMiddleware,
+  adminMiddleware,
+  adminDeleteUser,
+);
+router.delete(
+  '/admin/posts/:id',
+  authMiddleware,
+  adminMiddleware,
+  adminDeletePost,
+);
 router.delete(
   '/admin/comments/:id',
   authMiddleware,

@@ -41,9 +41,7 @@ export function renderSidebar(container) {
       <a class="sidebar__link" href="/events.html">Мероприятия</a>
       <a class="sidebar__link" href="/messages.html">Сообщения</a>
       ${
-        isAdmin
-          ? '<a class="sidebar__link" href="/admin.html">Админка</a>'
-          : ''
+        isAdmin ? '<a class="sidebar__link" href="/admin.html">Админка</a>' : ''
       }
     </nav>
     <div class="sidebar__bottom">

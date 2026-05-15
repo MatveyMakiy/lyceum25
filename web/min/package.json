@@ -4,12 +4,12 @@
   "description": "Версия 0.2.0, с зачатками фронтенда и бекэнда",
   "main": "index.js",
   "scripts": {
-  "test": "vitest run",
-  "test:watch": "vitest",
-  "coverage": "vitest run --coverage",
-  "dev": "vite",
-  "lint": "eslint .",
-  "format": "prettier --write ."
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "dev": "vite",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",

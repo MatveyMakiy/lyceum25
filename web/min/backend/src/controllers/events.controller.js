@@ -28,8 +28,9 @@ function formatEventResponse(event, userId) {
     ...event,
     participantsCount: event._count?.participants || 0,
     isParticipating:
-      event.participants?.some((participant) => participant.userId === userId) ||
-      false,
+      event.participants?.some(
+        (participant) => participant.userId === userId,
+      ) || false,
   };
 }
 const eventSelect = (userId) => ({

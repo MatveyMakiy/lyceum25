@@ -1,9 +1,6 @@
 import { getMyProfile, updateMyProfile } from '../../api/users.js';
 import { renderSidebar } from '../../components/layout/sidebar.js';
-import {
-  getCurrentUser,
-  saveCurrentUser,
-} from '../../utils/storage.js';
+import { getCurrentUser, saveCurrentUser } from '../../utils/storage.js';
 
 const currentUser = getCurrentUser();
 

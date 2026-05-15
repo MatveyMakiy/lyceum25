@@ -35,7 +35,9 @@ function getChatTitle(chat) {
   if (chat.title) {
     return chat.title;
   }
-  const otherMembers = chat.members.filter((user) => user.id !== currentUser.id);
+  const otherMembers = chat.members.filter(
+    (user) => user.id !== currentUser.id,
+  );
   if (otherMembers.length === 0) {
     return 'Избранное';
   }

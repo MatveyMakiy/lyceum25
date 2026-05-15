@@ -265,14 +265,14 @@ export async function joinGroup(req, res) {
         groupId: id,
       },
     });
-  if (groupChat) {
-    await prisma.chatMember.create({
-      data: {
-        userId: req.user.id,
-        chatId: groupChat.id,
-      },
-    });
-  }
+    if (groupChat) {
+      await prisma.chatMember.create({
+        data: {
+          userId: req.user.id,
+          chatId: groupChat.id,
+        },
+      });
+    }
     return res.status(201).json({
       message: 'Вы вступили в группу',
     });

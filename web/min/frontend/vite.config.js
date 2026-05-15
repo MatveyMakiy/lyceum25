@@ -9,11 +9,7 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'html'],
       include: ['src/**/*.js'],
-      exclude: [
-        'src/pages/**',
-        'src/mock/**',
-        'src/main.js',
-      ],
+      exclude: ['src/pages/**', 'src/mock/**', 'src/main.js'],
     },
   },
 });

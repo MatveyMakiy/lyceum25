@@ -152,9 +152,8 @@ function renderUsers(users) {
   }
   users.forEach((user) => {
     const roleButton = createRoleButton(user);
-    const deleteUser = user.id === currentUser.id
-      ? null
-      : () => adminDeleteUser(user.id);
+    const deleteUser =
+      user.id === currentUser.id ? null : () => adminDeleteUser(user.id);
     adminUsers.appendChild(
       createAdminItem({
         title: `${user.firstName} ${user.lastName}`,
