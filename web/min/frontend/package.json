@@ -10,6 +10,7 @@
     "test": "vitest",
     "dev": "vite",
     "lint": "eslint .",
+    "coverage": "vitest run --coverage",
     "format": "prettier --write ."
   },
   "keywords": [],
