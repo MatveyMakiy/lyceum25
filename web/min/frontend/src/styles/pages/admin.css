@@ -102,3 +102,55 @@
 .admin-item__delete:hover {
   background: #f3f3f3;
 }
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 760px;
+}
+
+.admin-form input,
+.admin-form textarea {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.admin-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.admin-form button {
+  align-self: flex-start;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+}
+
+.admin-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.admin-item__role {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  background: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-item__role:hover {
+  background: #f3f3f3;
+}

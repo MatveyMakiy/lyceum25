@@ -45,6 +45,25 @@
             </article>
           </section>
           <section class="admin-section">
+            <h2>Создать публичное мероприятие</h2>
+            <form id="admin-public-event-form" class="admin-form">
+              <input name="title" type="text" placeholder="Название мероприятия" />
+              <textarea
+                name="description"
+                placeholder="Описание мероприятия"
+              ></textarea>
+              <input name="startTime" type="datetime-local" />
+              <input name="endTime" type="datetime-local" />
+              <input name="location" type="text" placeholder="Место проведения" />
+              <p id="admin-public-event-error" class="error-text"></p>
+              <button type="submit">Создать публичное мероприятие</button>
+            </form>
+          </section>
+          <section class="admin-section">
+            <h2>Пользователи</h2>
+            <div id="admin-users" class="admin-list"></div>
+          </section>
+          <section class="admin-section">
             <h2>Последние посты</h2>
             <div id="admin-posts" class="admin-list"></div>
           </section>

@@ -35,7 +35,30 @@ export async function getAdminStats(req, res) {
 
 export async function getAdminContent(req, res) {
   try {
-    const [posts, comments, groups, events] = await Promise.all([
+    const [users, posts, comments, groups, events] = await Promise.all([
+      prisma.user.findMany({
+        orderBy: [
+          {
+            role: 'asc',
+          },
+          {
+            lastName: 'asc',
+          },
+          {
+            firstName: 'asc',
+          },
+        ],
+        take: 30,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          class: true,
+          createdAt: true,
+        },
+      }),
       prisma.post.findMany({
         orderBy: {
           createdAt: 'desc',
@@ -136,6 +159,7 @@ export async function getAdminContent(req, res) {
       }),
     ]);
     return res.json({
+      users,
       posts,
       comments,
       groups,
@@ -143,6 +167,135 @@ export async function getAdminContent(req, res) {
     });
   } catch (error) {
     console.error('Get admin content error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function adminCreatePublicEvent(req, res) {
+  try {
+    const { title, description, startTime, endTime, location } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        message: 'Название мероприятия обязательно',
+      });
+    }
+    if (!startTime) {
+      return res.status(400).json({
+        message: 'Дата начала обязательна',
+      });
+    }
+    const event = await prisma.event.create({
+      data: {
+        title: title.trim(),
+        description: description?.trim() || null,
+        startTime: new Date(startTime),
+        endTime: endTime ? new Date(endTime) : null,
+        location: location?.trim() || null,
+        isPublic: true,
+        groupId: null,
+        createdBy: req.user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        startTime: true,
+        endTime: true,
+        location: true,
+        isPublic: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return res.status(201).json(event);
+  } catch (error) {
+    console.error('Admin create public event error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function adminUpdateUserRole(req, res) {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    if (!['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        message: 'Недопустимая роль',
+      });
+    }
+    if (id === req.user.id && role !== 'admin') {
+      return res.status(400).json({
+        message: 'Нельзя снять роль администратора с самого себя',
+      });
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+    const updatedUser = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        role,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        class: true,
+        createdAt: true,
+      },
+    });
+    return res.json(updatedUser);
+  } catch (error) {
+    console.error('Admin update user role error:', error);
+    return res.status(500).json({
+      message: 'Ошибка сервера',
+    });
+  }
+}
+
+export async function adminDeleteUser(req, res) {
+  try {
+    const { id } = req.params;
+    if (id === req.user.id) {
+      return res.status(400).json({
+        message: 'Нельзя удалить самого себя',
+      });
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+    await prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+    return res.json({
+      message: 'Пользователь удалён',
+    });
+  } catch (error) {
+    console.error('Admin delete user error:', error);
     return res.status(500).json({
       message: 'Ошибка сервера',
     });
