@@ -1,10 +1,15 @@
 import { getCurrentUser, removeCurrentUser } from '../../utils/storage.js';
+import {
+  applySavedTheme,
+  getCurrentTheme,
+  toggleTheme,
+} from '../../utils/theme.js';
 
 export function renderSidebar(container) {
   const currentUser = getCurrentUser();
   const isAdmin = currentUser?.role === 'admin';
+  applySavedTheme();
   container.classList.add('sidebar');
-
   if (!currentUser) {
     container.innerHTML = `
       <div class="sidebar__logo">Logo</div>
@@ -14,11 +19,14 @@ export function renderSidebar(container) {
       </nav>
 
       <div class="sidebar__bottom">
+        <button class="sidebar__theme" id="theme-toggle-btn" type="button">
+          Сменить тему
+        </button>
         <a class="sidebar__link" href="/login.html">Войти</a>
         <a class="sidebar__link" href="/register.html">Регистрация</a>
       </div>
     `;
-
+    setupThemeButton();
     return;
   }
 
@@ -39,14 +47,16 @@ export function renderSidebar(container) {
       }
     </nav>
     <div class="sidebar__bottom">
+      <button class="sidebar__theme" id="theme-toggle-btn" type="button">
+        Сменить тему
+      </button>
       <button class="sidebar__logout" id="logout-btn" type="button">
         Выйти
       </button>
     </div>
   `;
-
+  setupThemeButton();
   const logoutButton = document.getElementById('logout-btn');
-
   if (logoutButton) {
     logoutButton.addEventListener('click', () => {
       removeCurrentUser();
@@ -54,4 +64,20 @@ export function renderSidebar(container) {
       window.location.href = '/login.html';
     });
   }
+}
+
+function setupThemeButton() {
+  const themeButton = document.getElementById('theme-toggle-btn');
+  if (!themeButton) {
+    return;
+  }
+  function updateThemeButtonText() {
+    themeButton.textContent =
+      getCurrentTheme() === 'dark' ? 'Светлая тема' : 'Тёмная тема';
+  }
+  updateThemeButtonText();
+  themeButton.addEventListener('click', () => {
+    toggleTheme();
+    updateThemeButtonText();
+  });
 }

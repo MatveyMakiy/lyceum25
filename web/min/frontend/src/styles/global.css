@@ -1,12 +1,47 @@
+:root {
+  --page-bg: #f5f5f5;
+  --card-bg: #ffffff;
+  --text-color: #222222;
+  --muted-color: #777777;
+  --border-color: #dddddd;
+  --input-border: #cccccc;
+  --soft-bg: #f0f0f0;
+  --soft-bg-hover: #e4e4e4;
+  --primary-bg: #222222;
+  --primary-text: #ffffff;
+  --danger-color: #c62828;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+body.dark-theme {
+  --page-bg: #151515;
+  --card-bg: #202020;
+  --text-color: #f2f2f2;
+  --muted-color: #aaaaaa;
+  --border-color: #333333;
+  --input-border: #444444;
+  --soft-bg: #2a2a2a;
+  --soft-bg-hover: #353535;
+  --primary-bg: #f2f2f2;
+  --primary-text: #151515;
+  --danger-color: #ff6b6b;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
 * {
   box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  color: #222;
+  background: var(--page-bg);
+  color: var(--text-color);
 }
 
 a {
@@ -15,6 +50,121 @@ a {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  background: var(--card-bg);
+  border-color: var(--input-border);
+}
+
+body.dark-theme .auth-card,
+body.dark-theme .post-card,
+body.dark-theme .group-card,
+body.dark-theme .group-member-card,
+body.dark-theme .event-card,
+body.dark-theme .feed-event-card,
+body.dark-theme .user-card,
+body.dark-theme .chat-card,
+body.dark-theme .chat-message,
+body.dark-theme .comment-card,
+body.dark-theme .admin-stat-card,
+body.dark-theme .admin-item {
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: var(--shadow);
+}
+
+body.dark-theme .chat-message--own {
+  background: var(--soft-bg);
+}
+
+body.dark-theme .post-card__date,
+body.dark-theme .post-card__group,
+body.dark-theme .posts-status,
+body.dark-theme .feed-events-status,
+body.dark-theme .feed-event-card__meta,
+body.dark-theme .group-card__description,
+body.dark-theme .group-card__creator,
+body.dark-theme .group-page__description,
+body.dark-theme .group-page__creator,
+body.dark-theme .group-page__members,
+body.dark-theme .group-member-card__role,
+body.dark-theme .groups-status,
+body.dark-theme .event-card__description,
+body.dark-theme .event-card__meta,
+body.dark-theme .events-status,
+body.dark-theme .profile-page__email,
+body.dark-theme .profile-info-row__label,
+body.dark-theme .profile-status,
+body.dark-theme .users-status,
+body.dark-theme .user-card__class,
+body.dark-theme .messages-status,
+body.dark-theme .chat-card__last,
+body.dark-theme .chat-message__date,
+body.dark-theme .comments-status,
+body.dark-theme .comments-empty,
+body.dark-theme .comment-card__date,
+body.dark-theme .admin-header p,
+body.dark-theme .admin-status,
+body.dark-theme .admin-stat-card__label,
+body.dark-theme .admin-item__meta,
+body.dark-theme .admin-item__text {
+  color: var(--muted-color);
+}
+
+body.dark-theme .error-text {
+  color: var(--danger-color);
+}
+
+body.dark-theme .create-post-link,
+body.dark-theme .create-group-link,
+body.dark-theme .create-event-link,
+body.dark-theme .profile-edit-link,
+body.dark-theme .group-page__edit-link,
+body.dark-theme .post-form button,
+body.dark-theme .group-form button,
+body.dark-theme .group-post-form__actions button,
+body.dark-theme .event-form button,
+body.dark-theme .profile-form button,
+body.dark-theme .comment-form__actions button,
+body.dark-theme .chat-form button,
+body.dark-theme .admin-form button {
+  background: var(--primary-bg);
+  color: var(--primary-text);
+}
+
+body.dark-theme .post-card__action,
+body.dark-theme .post-card__like,
+body.dark-theme .comment-card__action,
+body.dark-theme .event-card__action,
+body.dark-theme .group-member-card__action,
+body.dark-theme .admin-item__delete,
+body.dark-theme .admin-item__role,
+body.dark-theme .events-actions button,
+body.dark-theme .groups-actions button,
+body.dark-theme .users-actions button,
+body.dark-theme .post-form__cancel,
+body.dark-theme .group-form__cancel,
+body.dark-theme .event-form__cancel,
+body.dark-theme .profile-form__cancel {
+  background: var(--soft-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark-theme .post-card__action:hover,
+body.dark-theme .post-card__like:hover,
+body.dark-theme .comment-card__action:hover,
+body.dark-theme .event-card__action:hover,
+body.dark-theme .group-member-card__action:hover,
+body.dark-theme .admin-item__delete:hover,
+body.dark-theme .admin-item__role:hover {
+  background: var(--soft-bg-hover);
 }
