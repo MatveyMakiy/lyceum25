@@ -3,7 +3,7 @@ import {
   applySavedTheme,
   getCurrentTheme,
   toggleTheme,
-} from '../utils/theme.js';
+} from '../src/utils/theme.js';
 
 describe('theme utils', () => {
   beforeEach(() => {

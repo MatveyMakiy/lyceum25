@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getFeedEvents, getPublicEvents } from '../api/events.js';
+import { getFeedEvents, getPublicEvents } from '../src/api/events.js';
 
 function mockJsonResponse(data, ok = true) {
   return Promise.resolve({

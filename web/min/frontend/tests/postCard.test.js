@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createPostCard } from '../components/post/postCard.js';
+import { createPostCard } from '../src/components/post/postCard.js';
 
 describe('createPostCard', () => {
   beforeEach(() => {

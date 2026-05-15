@@ -3,7 +3,7 @@ import {
   getCurrentUser,
   removeCurrentUser,
   saveCurrentUser,
-} from '../utils/storage.js';
+} from '../src/utils/storage.js';
 
 describe('storage utils', () => {
   beforeEach(() => {

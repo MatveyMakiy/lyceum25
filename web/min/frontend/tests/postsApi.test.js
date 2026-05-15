@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getPosts, togglePostLike } from '../api/posts.js';
+import { getPosts, togglePostLike } from '../src/api/posts.js';
 
 function mockJsonResponse(data, ok = true) {
   return Promise.resolve({
