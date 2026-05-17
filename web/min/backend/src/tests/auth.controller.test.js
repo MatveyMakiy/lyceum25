@@ -67,25 +67,22 @@ describe('auth controller', () => {
     await register(req, res);
     expect(bcrypt.hash).toHaveBeenCalledWith('123456', 10);
     expect(prisma.user.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-            data: expect.objectContaining({
-            email: 'test@example.com',
-            passwordHash: 'hashed-password',
-            firstName: 'Иван',
-            lastName: 'Иванов',
-            }),
-        }),
-    );
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        token: 'test-token',
-        user: expect.objectContaining({
-          id: 'user-1',
+        data: expect.objectContaining({
           email: 'test@example.com',
+          passwordHash: 'hashed-password',
+          firstName: 'Иван',
+          lastName: 'Иванов',
         }),
       }),
     );
+    expect(res.status).toHaveBeenCalledWith(201);
+    const responseBody = res.json.mock.calls[0][0];
+    expect(responseBody.id).toBe('user-1');
+    expect(responseBody.email).toBe('test@example.com');
+    expect(responseBody.firstName).toBe('Иван');
+    expect(responseBody.lastName).toBe('Иванов');
+    expect(responseBody.role).toBe('user');
   });
   it('does not register without required fields', async () => {
     const req = {
@@ -100,7 +97,7 @@ describe('auth controller', () => {
     await register(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Все поля обязательны',
+      message: 'Все обязательные поля должны быть заполнены',
     });
   });
   it('does not register existing user', async () => {
@@ -120,7 +117,7 @@ describe('auth controller', () => {
     await register(req, res);
     expect(res.status).toHaveBeenCalledWith(409);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Пользователь с такой почтой уже существует',
+      message: 'Пользователь с таким email уже существует',
     });
   });
   it('logs user in', async () => {
@@ -169,7 +166,7 @@ describe('auth controller', () => {
     await login(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Почта и пароль обязательны',
+      message: 'Email и пароль обязательны',
     });
   });
   it('does not login unknown user', async () => {
@@ -184,7 +181,7 @@ describe('auth controller', () => {
     await login(req, res);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Неверная почта или пароль',
+      message: 'Неверный email или пароль',
     });
   });
   it('does not login with wrong password', async () => {
@@ -204,7 +201,7 @@ describe('auth controller', () => {
     await login(req, res);
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Неверная почта или пароль',
+      message: 'Неверный email или пароль',
     });
   });
 });

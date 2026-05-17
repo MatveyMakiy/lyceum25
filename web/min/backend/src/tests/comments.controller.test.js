@@ -15,11 +15,8 @@ vi.mock('../lib/prisma.js', () => ({
 }));
 
 const prisma = (await import('../lib/prisma.js')).default;
-const {
-  getPostComments,
-  createComment,
-  deleteComment,
-} = await import('../controllers/comments.controller.js');
+const { getPostComments, createComment, deleteComment } =
+  await import('../controllers/comments.controller.js');
 
 function createResponse() {
   const res = {};
