@@ -67,14 +67,14 @@ describe('auth controller', () => {
     await register(req, res);
     expect(bcrypt.hash).toHaveBeenCalledWith('123456', 10);
     expect(prisma.user.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          email: 'test@example.com',
-          password: 'hashed-password',
-          firstName: 'Иван',
-          lastName: 'Иванов',
+        expect.objectContaining({
+            data: expect.objectContaining({
+            email: 'test@example.com',
+            passwordHash: 'hashed-password',
+            firstName: 'Иван',
+            lastName: 'Иванов',
+            }),
         }),
-      }),
     );
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(
@@ -127,7 +127,7 @@ describe('auth controller', () => {
     prisma.user.findUnique.mockResolvedValue({
       id: 'user-1',
       email: 'test@example.com',
-      password: 'hashed-password',
+      passwordHash: 'hashed-password',
       firstName: 'Иван',
       lastName: 'Иванов',
       role: 'user',
@@ -191,7 +191,7 @@ describe('auth controller', () => {
     prisma.user.findUnique.mockResolvedValue({
       id: 'user-1',
       email: 'test@example.com',
-      password: 'hashed-password',
+      passwordHash: 'hashed-password',
     });
     bcrypt.compare.mockResolvedValue(false);
     const req = {

@@ -99,7 +99,7 @@ describe('groups controller', () => {
         data: expect.objectContaining({
           name: 'Группа',
           description: 'Описание',
-          creatorId: 'user-1',
+          createdBy: 'user-1',
           members: {
             create: {
               userId: 'user-1',
