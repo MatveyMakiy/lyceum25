@@ -7,7 +7,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
-    "dev": "vite",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev  --prefix frontend\"",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
